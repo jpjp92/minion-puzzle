@@ -6,22 +6,43 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>미니언 퍼즐 게임</h1>
-  <div class="controls">
-    <button onclick="setGridSize(3)">3x3</button>
-    <button onclick="setGridSize(4)">4x4</button>
-    <button onclick="setGridSize(5)">5x5</button>
-    <button onclick="startGame()">게임 시작</button>
-  </div>
-  <div class="game-container">
-    <div id="tile-container" class="tile-container"></div>
-    <div id="puzzle-board" class="puzzle-board"></div>
-    <div id="preview" class="preview">
-      <img id="preview-img" src="config/image1.jpeg" alt="미리보기">
+  <div class="game-wrapper">
+    <h1>미니언 퍼즐 게임</h1>
+    <div class="controls">
+      <div class="difficulty-buttons">
+        <button id="size-3" class="size-btn active" onclick="setGridSize(3)">3x3</button>
+        <button id="size-4" class="size-btn" onclick="setGridSize(4)">4x4</button>
+        <button id="size-5" class="size-btn" onclick="setGridSize(5)">5x5</button>
+      </div>
+      <button id="start-btn" onclick="startGame()">게임 시작</button>
     </div>
+    
+    <div class="game-stats">
+      <div id="timer" class="stat-item">시간: 0초</div>
+      <div id="moves" class="stat-item">이동 횟수: 0</div>
+    </div>
+    
+    <div class="game-container">
+      <div class="game-section">
+        <h2>조각</h2>
+        <div id="tile-container" class="tile-container"></div>
+      </div>
+      
+      <div class="game-section">
+        <h2>퍼즐판</h2>
+        <div id="puzzle-board" class="puzzle-board"></div>
+      </div>
+      
+      <div class="game-section">
+        <h2>미리보기</h2>
+        <div id="preview" class="preview">
+          <img id="preview-img" src="config/image1.jpeg" alt="미리보기">
+        </div>
+      </div>
+    </div>
+    
+    <div id="message" class="message"></div>
   </div>
-  <div id="timer">시간: 0초</div>
-
   <script src="script.js"></script>
 </body>
 </html>
