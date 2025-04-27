@@ -334,14 +334,14 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
       tile.removeEventListener('touchend', touchEnd);
       
       // 성공 메시지 표시
-      showMessage('정확한 위치입니다!', 'success', 1000);
+      showMessage('정확합니다!(Correct)', 'success', 1000);
       
       // 퍼즐 완성 체크
       checkComplete();
     }
   } else {
     // 잘못된 위치에 놓은 경우
-    showMessage('잘못된 위치입니다. 다시 시도하세요.', 'error', 1000);
+    showMessage('다시 시도하세요! (Try again)', 'error', 1000);
     
     // 원래 위치로 복귀
     tile.style.position = '';
@@ -398,7 +398,7 @@ function checkComplete() {
     isGameStarted = false;
     
     // 축하 메시지를 토스트로 표시
-    showMessage(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success', 5000); // 더 오래 표시
+    showMessage(`축하합니다! (Congratulations) 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success', 5000); // 더 오래 표시
     
     // 애니메이션 효과 (모든 타일에 완성 효과 추가)
     placedTiles.forEach((tile, idx) => {
