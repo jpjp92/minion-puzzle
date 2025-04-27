@@ -5,6 +5,8 @@ let timerInterval;
 let time = 0;
 let moves = 0;
 let isGameStarted = false;
+let touchStartX, touchStartY; // 터치 시작 위치
+let activeTouchTile = null; // 현재 터치 중인 타일
 
 // 초기화 함수
 window.onload = function() {
@@ -38,11 +40,6 @@ function startGame() {
   // UI 초기화
   document.getElementById('timer').textContent = `시간: 0초`;
   document.getElementById('moves').textContent = `이동 횟수: 0`;
-  
-  if (document.getElementById('message')) {
-    document.getElementById('message').textContent = '';
-    document.getElementById('message').className = 'message';
-  }
   
   // 퍼즐 설정
   setupPuzzle();
@@ -110,9 +107,14 @@ function setupPuzzle() {
     div.dataset.x = tile.x;
     div.dataset.y = tile.y;
     
-    // 이벤트 리스너 추가
+    // 데스크톱 이벤트 리스너 추가
     div.addEventListener('dragstart', dragStart);
     div.addEventListener('dragend', dragEnd);
+    
+    // 모바일 터치 이벤트 리스너 추가
+    div.addEventListener('touchstart', touchStart);
+    div.addEventListener('touchmove', touchMove);
+    div.addEventListener('touchend', touchEnd);
     
     tileContainer.appendChild(div);
   });
@@ -127,11 +129,14 @@ function setupPuzzle() {
       dropzone.dataset.x = x;
       dropzone.dataset.y = y;
       
-      // 이벤트 리스너 추가
+      // 데스크톱 이벤트 리스너 추가
       dropzone.addEventListener('dragover', dragOver);
       dropzone.addEventListener('dragenter', dragEnter);
       dropzone.addEventListener('dragleave', dragLeave);
       dropzone.addEventListener('drop', drop);
+      
+      // 모바일 터치 이벤트를 위한 드롭존 식별
+      dropzone.setAttribute('data-dropzone', 'true');
       
       puzzleBoard.appendChild(dropzone);
     }
@@ -147,6 +152,7 @@ function setupPuzzle() {
   }
 }
 
+// 데스크톱 드래그 앤 드롭 이벤트 핸들러
 function dragStart(e) {
   // 타일 정보를 dataTransfer에 저장
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
@@ -202,6 +208,111 @@ function drop(e) {
   // 타일 찾기
   const draggedTile = document.querySelector(`.tile[data-x="${tileX}"][data-y="${tileY}"]`);
   
+  // 이동 횟수 증가 및 타일 배치 시도
+  placeTile(draggedTile, tileX, tileY, dropzoneX, dropzoneY, e.target);
+}
+
+// 모바일 터치 이벤트 핸들러
+function touchStart(e) {
+  if (!e.target.classList.contains('tile')) return;
+  
+  e.preventDefault(); // 이벤트 기본 동작 방지
+  
+  // 터치 시작 위치 저장
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  
+  // 현재 타일 저장
+  activeTouchTile = e.target;
+  activeTouchTile.classList.add('dragging');
+  activeTouchTile.style.opacity = '0.5';
+  
+  // 타일을 최상위로 표시
+  activeTouchTile.style.zIndex = '100';
+}
+
+function touchMove(e) {
+  if (!activeTouchTile) return;
+  
+  e.preventDefault(); // 스크롤 방지
+  
+  const touch = e.touches[0];
+  
+  // 타일 이동
+  activeTouchTile.style.position = 'fixed';
+  activeTouchTile.style.left = `${touch.clientX - (activeTouchTile.offsetWidth / 2)}px`;
+  activeTouchTile.style.top = `${touch.clientY - (activeTouchTile.offsetHeight / 2)}px`;
+  
+  // 현재 위치에서 드롭존 확인
+  const dropzones = document.querySelectorAll('.dropzone');
+  dropzones.forEach(zone => {
+    zone.classList.remove('highlight');
+    
+    const zoneRect = zone.getBoundingClientRect();
+    if (
+      touch.clientX >= zoneRect.left && 
+      touch.clientX <= zoneRect.right && 
+      touch.clientY >= zoneRect.top && 
+      touch.clientY <= zoneRect.bottom
+    ) {
+      // 드롭존 위에 있는 경우 하이라이트
+      zone.classList.add('highlight');
+    }
+  });
+}
+
+function touchEnd(e) {
+  if (!activeTouchTile) return;
+  
+  e.preventDefault();
+  
+  // 타일 정보 가져오기
+  const tileX = parseInt(activeTouchTile.dataset.x);
+  const tileY = parseInt(activeTouchTile.dataset.y);
+  
+  // 터치 종료 위치 확인
+  const touch = e.changedTouches[0];
+  let droppedOnZone = false;
+  
+  // 모든 드롭존 검사
+  const dropzones = document.querySelectorAll('.dropzone');
+  dropzones.forEach(zone => {
+    zone.classList.remove('highlight');
+    
+    const zoneRect = zone.getBoundingClientRect();
+    if (
+      touch.clientX >= zoneRect.left && 
+      touch.clientX <= zoneRect.right && 
+      touch.clientY >= zoneRect.top && 
+      touch.clientY <= zoneRect.bottom
+    ) {
+      // 드롭존 위에서 터치 종료
+      const dropzoneX = parseInt(zone.dataset.x);
+      const dropzoneY = parseInt(zone.dataset.y);
+      
+      // 타일 배치 시도
+      placeTile(activeTouchTile, tileX, tileY, dropzoneX, dropzoneY, zone);
+      droppedOnZone = true;
+    }
+  });
+  
+  // 드롭존 위가 아니면 원래 위치로 복귀
+  if (!droppedOnZone) {
+    activeTouchTile.style.position = '';
+    activeTouchTile.style.left = '';
+    activeTouchTile.style.top = '';
+    activeTouchTile.style.zIndex = '';
+  }
+  
+  // 드래깅 스타일 제거
+  activeTouchTile.classList.remove('dragging');
+  activeTouchTile.style.opacity = '1';
+  activeTouchTile = null;
+}
+
+// 타일 배치 공통 함수 (드래그&드롭과 터치에서 모두 사용)
+function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   // 이동 횟수 증가
   moves++;
   document.getElementById('moves').textContent = `이동 횟수: ${moves}`;
@@ -209,45 +320,71 @@ function drop(e) {
   // 올바른 위치에 놓았는지 확인
   if (tileX === dropzoneX && tileY === dropzoneY) {
     // 올바른 위치에 타일 배치
-    if (e.target.classList.contains('dropzone') && !e.target.hasChildNodes()) {
-      e.target.appendChild(draggedTile);
-      draggedTile.style.position = 'relative';
-      draggedTile.style.left = '0';
-      draggedTile.style.top = '0';
-      draggedTile.setAttribute('draggable', false);
+    if (dropzone.classList.contains('dropzone') && !dropzone.hasChildNodes()) {
+      dropzone.appendChild(tile);
+      tile.style.position = 'relative';
+      tile.style.left = '0';
+      tile.style.top = '0';
+      tile.style.zIndex = '';
+      tile.setAttribute('draggable', false);
+      
+      // 터치 이벤트 제거 (정확한 위치에 배치된 타일)
+      tile.removeEventListener('touchstart', touchStart);
+      tile.removeEventListener('touchmove', touchMove);
+      tile.removeEventListener('touchend', touchEnd);
       
       // 성공 메시지 표시
-      if (document.getElementById('message')) {
-        showMessage('정확한 위치입니다!', 'success', 1000);
-      }
+      showMessage('정확한 위치입니다!', 'success', 1000);
       
       // 퍼즐 완성 체크
       checkComplete();
     }
   } else {
     // 잘못된 위치에 놓은 경우
-    if (document.getElementById('message')) {
-      showMessage('잘못된 위치입니다. 다시 시도하세요.', 'error', 1000);
-    }
+    showMessage('잘못된 위치입니다. 다시 시도하세요.', 'error', 1000);
+    
+    // 원래 위치로 복귀
+    tile.style.position = '';
+    tile.style.left = '';
+    tile.style.top = '';
+    tile.style.zIndex = '';
     
     // 틀린 위치임을 시각적으로 표시 (흔들림 효과)
-    draggedTile.classList.add('wrong');
+    tile.classList.add('wrong');
     setTimeout(() => {
-      draggedTile.classList.remove('wrong');
+      tile.classList.remove('wrong');
     }, 500);
   }
 }
 
+// 토스트 메시지 표시 함수
 function showMessage(text, type, duration = 3000) {
-  const messageEl = document.getElementById('message');
-  if (!messageEl) return;
+  // 기존 메시지 요소가 있으면 제거
+  const existingMessage = document.getElementById('message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
   
-  messageEl.textContent = text;
-  messageEl.className = `message ${type}`;
+  // 새 토스트 메시지 요소 생성
+  const toast = document.createElement('div');
+  toast.id = 'message';
+  toast.className = `toast-message ${type}`;
+  toast.textContent = text;
   
-  // 일정 시간 후 메시지 숨기기
+  // body에 추가
+  document.body.appendChild(toast);
+  
+  // 토스트 애니메이션
   setTimeout(() => {
-    messageEl.className = 'message';
+    toast.classList.add('show');
+  }, 10);
+  
+  // 지정된 시간 후 토스트 제거
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      toast.remove();
+    }, 300); // 페이드 아웃 애니메이션 시간
   }, duration);
 }
 
@@ -260,14 +397,8 @@ function checkComplete() {
     clearInterval(timerInterval);
     isGameStarted = false;
     
-    // 축하 메시지 표시
-    if (document.getElementById('message')) {
-      showMessage(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success');
-    } else {
-      setTimeout(() => {
-        alert(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`);
-      }, 100);
-    }
+    // 축하 메시지를 토스트로 표시
+    showMessage(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success', 5000); // 더 오래 표시
     
     // 애니메이션 효과 (모든 타일에 완성 효과 추가)
     placedTiles.forEach((tile, idx) => {
