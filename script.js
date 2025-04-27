@@ -84,6 +84,10 @@ function setupPuzzle() {
   // 타일 컨테이너 스타일 설정
   tileContainer.style.width = `${containerSize}px`;
   tileContainer.style.height = `${containerSize}px`;
+  tileContainer.style.display = 'grid';
+  tileContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+  tileContainer.style.gridTemplateRows = `repeat(${Math.ceil(tiles.length / gridSize)}, 1fr)`;
+  tileContainer.style.gap = '4px';
   
   // 퍼즐 보드 스타일 설정
   puzzleBoard.style.width = `${containerSize}px`;
@@ -133,16 +137,13 @@ function setupPuzzle() {
     }
   }
   
-  // CSS Grid로 퍼즐 보드 모양 잡기
-  if (gridSize === 3) {
-    puzzleBoard.style.gridTemplateColumns = 'repeat(3, 1fr)';
-    puzzleBoard.style.gridTemplateRows = 'repeat(3, 1fr)';
-  } else if (gridSize === 4) {
-    puzzleBoard.style.gridTemplateColumns = 'repeat(4, 1fr)';
-    puzzleBoard.style.gridTemplateRows = 'repeat(4, 1fr)';
-  } else if (gridSize === 5) {
-    puzzleBoard.style.gridTemplateColumns = 'repeat(5, 1fr)';
-    puzzleBoard.style.gridTemplateRows = 'repeat(5, 1fr)';
+  // 동적으로 타일 컨테이너 높이 조정 (4x4, 5x5에서 모든 타일이 보이도록)
+  if (gridSize > 3) {
+    // 타일이 더 많으므로 컨테이너 높이를 동적으로 조정
+    const rowsNeeded = Math.ceil(tiles.length / gridSize);
+    const adjustedHeight = (tileSize + 4) * rowsNeeded; // gap 4px 고려
+    tileContainer.style.height = `${adjustedHeight}px`;
+    tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
 
