@@ -334,7 +334,7 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
       tile.removeEventListener('touchend', touchEnd);
       
       // 성공 메시지 표시
-      showMessage('정확합니다!(Correct)', 'success', 1000);
+      showMessage('정확합니다! (Correct)', 'success', 1000);
       
       // 퍼즐 완성 체크
       checkComplete();
