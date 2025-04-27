@@ -1,5 +1,5 @@
 let gridSize = 3;
-let originalImage = '3ad4a41a-5ae6-42e1-a031-c42a13e478a7.png';
+let originalImage = 'config/image1.jpeg';
 let tiles = [];
 let timerInterval;
 let time = 0;
