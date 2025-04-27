@@ -1,357 +1,250 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미니언 슬라이딩 퍼즐</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f8ff;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>드래그 퍼즐 게임</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
 
-        h1 {
-            color: #3366cc;
-            margin-bottom: 20px;
-        }
+    h1 {
+      color: #3366cc;
+      margin-bottom: 20px;
+    }
 
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-        .puzzle-container {
-            position: relative;
-            width: 400px; /* 더 크게 변경 */
-            height: 400px; /* 더 크게 변경 */
-            border: 3px solid #3366cc;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
+    button {
+      padding: 10px 15px;
+      background: #3366cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
 
-        .tile {
-            position: absolute;
-            border: 1px solid white;
-            transition: all 0.2s ease-in-out;
-            background-size: 400px 400px; /* background-size도 변경 */
-            cursor: grab; /* 드래그 가능 커서 */
-            user-select: none; /* 텍스트 선택 방지 */
-        }
+    button:hover {
+      background: #254e9e;
+    }
 
-        .tile.dragging {
-            opacity: 0.7;
-            z-index: 10;
-        }
+    .game-area {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: start;
+      width: 100%;
+      max-width: 1200px;
+    }
 
-        .tile.empty {
-            background-color: #ddd;
-            border: 1px dashed #aaa;
-            cursor: default;
-        }
+    .tile-pool, .preview-container {
+      width: 200px;
+      min-height: 400px;
+      border: 2px dashed #3366cc;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: start;
+      background-color: #e6f0ff;
+    }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
+    .puzzle-board {
+      position: relative;
+      background-color: #ffffff;
+      border: 3px solid #3366cc;
+      display: grid;
+      gap: 2px;
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #3366cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .tile {
+      width: 100%;
+      height: 100%;
+      background-image: url('config/image1.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      cursor: grab;
+      transition: transform 0.2s, opacity 0.2s;
+    }
 
-        button:hover {
-            background-color: #254e9e;
-        }
+    .tile.dragging {
+      opacity: 0.7;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
 
-        .moves {
-            margin-top: 10px;
-            font-size: 18px;
-        }
+    .preview-container img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
 
-        .win-message {
-            font-size: 24px;
-            color: #3366cc;
-            font-weight: bold;
-            margin-top: 15px;
-            display: none;
-        }
+    .timer {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #333;
+    }
 
-        .preview {
-            width: 200px; /* 더 크게 변경 */
-            height: 200px; /* 더 크게 변경 */
-            margin-top: 20px;
-            border: 2px solid #3366cc;
-            object-fit: cover;
-        }
-
-        @media (max-width: 600px) {
-            .puzzle-container {
-                width: 300px; /* 반응형으로 조절 */
-                height: 300px; /* 반응형으로 조절 */
-            }
-            .tile {
-                background-size: 300px 300px; /* 반응형으로 조절 */
-            }
-            .preview {
-                width: 150px; /* 반응형으로 조절 */
-                height: 150px; /* 반응형으로 조절 */
-            }
-        }
-    </style>
+    .win-message {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #3366cc;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>미니언 슬라이딩 퍼즐</h1>
-    <div class="game-container">
-        <div class="puzzle-container" id="puzzle"></div>
-        <div class="controls">
-            <button id="start-button">게임 시작</button>
-            <button id="preview-button">미리보기 숨기기</button>
-        </div>
-        <div class="moves" id="moves">이동 횟수: 0</div>
-        <div class="win-message" id="win-message">축하합니다! 퍼즐을 완성했습니다!</div>
-        <img src="config/image1.jpeg" alt="미니언 이미지 미리보기" class="preview" id="preview-image">
+  <h1>드래그 퍼즐 게임</h1>
+
+  <div class="controls">
+    <button onclick="setDifficulty(3)">3x3</button>
+    <button onclick="setDifficulty(4)">4x4</button>
+    <button onclick="setDifficulty(5)">5x5</button>
+    <button onclick="startGame()">게임 시작</button>
+  </div>
+
+  <div class="timer" id="timer">시간: 0초</div>
+
+  <div class="game-area">
+    <div class="tile-pool" id="tile-pool"></div>
+    <div class="puzzle-board" id="puzzle-board"></div>
+    <div class="preview-container">
+      <img src="config/image1.jpeg" alt="미리보기">
     </div>
+  </div>
 
-    <script>
-        // 게임 상태 변수
-        const gridSize = 3;
-        let tiles = [];
-        let emptyTile = { row: gridSize - 1, col: gridSize - 1 };
-        let moveCount = 0;
-        let gameStarted = false;
-        let correctPositions = [];
-        let draggedTile = null;
-        let dragOffsetX, dragOffsetY;
+  <div class="win-message" id="win-message"></div>
 
-        // DOM 요소
-        const puzzleContainer = document.getElementById('puzzle');
-        const startButton = document.getElementById('start-button');
-        const previewButton = document.getElementById('preview-button');
-        const movesElement = document.getElementById('moves');
-        const winMessage = document.getElementById('win-message');
-        const previewImage = document.getElementById('preview-image');
+  <script>
+    let gridSize = 3;
+    let timer = 0;
+    let timerInterval;
 
-        // 실제 미니언 이미지 경로 (확장자 포함)
-        const imageUrl = 'config/image1.jpeg';
+    function setDifficulty(size) {
+      gridSize = size;
+    }
 
-        // 게임 초기화
-        function initializeGame() {
-            puzzleContainer.innerHTML = '';
-            tiles = [];
-            moveCount = 0;
-            movesElement.textContent = '이동 횟수: 0';
-            winMessage.style.display = 'none';
+    function startGame() {
+      clearInterval(timerInterval);
+      timer = 0;
+      document.getElementById('timer').innerText = `시간: 0초`;
+      timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').innerText = `시간: ${timer}초`;
+      }, 1000);
 
-            const tileSize = puzzleContainer.offsetWidth / gridSize;
+      generatePuzzle();
+    }
 
-            // 타일 생성
-            for (let row = 0; row < gridSize; row++) {
-                for (let col = 0; col < gridSize; col++) {
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.style.width = `${tileSize}px`;
-                    tile.style.height = `${tileSize}px`;
-                    tile.style.backgroundImage = `url(${imageUrl})`;
-                    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-                    tile.dataset.row = row;
-                    tile.dataset.col = col;
+    function generatePuzzle() {
+      const tilePool = document.getElementById('tile-pool');
+      const puzzleBoard = document.getElementById('puzzle-board');
+      const winMessage = document.getElementById('win-message');
+      tilePool.innerHTML = '';
+      puzzleBoard.innerHTML = '';
+      winMessage.textContent = '';
 
-                    // 마지막 타일은 빈 공간
-                    if (row === emptyTile.row && col === emptyTile.col) {
-                        tile.classList.add('empty');
-                    } else {
-                        // 드래그 이벤트 리스너 추가
-                        tile.addEventListener('mousedown', dragStart);
-                    }
+      puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+      puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+      puzzleBoard.style.width = puzzleBoard.style.height = `${gridSize * 100}px`;
 
-                    positionTile(tile, row, col);
-                    puzzleContainer.appendChild(tile);
-                    tiles.push({
-                        element: tile,
-                        row: row,
-                        col: col,
-                        correctRow: row,
-                        correctCol: col
-                    });
-                }
-            }
+      const tiles = [];
 
-            // 올바른 위치 저장
-            correctPositions = tiles.map(tile => ({
-                row: parseInt(tile.element.dataset.row),
-                col: parseInt(tile.element.dataset.col)
-            }));
+      for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+          const tile = document.createElement('div');
+          tile.classList.add('tile');
+          tile.dataset.row = row;
+          tile.dataset.col = col;
+          tile.style.backgroundPosition = `${-col * 100}px ${-row * 100}px`;
+          tile.draggable = true;
 
-            // 드롭 영역 이벤트 리스너 추가 (puzzleContainer 전체)
-            puzzleContainer.addEventListener('mouseup', dragEnd);
-            puzzleContainer.addEventListener('mousemove', drag);
+          tile.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', `${row},${col}`);
+            tile.classList.add('dragging');
+          });
+
+          tile.addEventListener('dragend', () => {
+            tile.classList.remove('dragging');
+          });
+
+          tiles.push(tile);
         }
+      }
 
-        // 타일 위치 설정 함수
-        function positionTile(tile, row, col) {
-            const tileSize = puzzleContainer.offsetWidth / gridSize;
-            tile.style.top = `${row * tileSize}px`;
-            tile.style.left = `${col * tileSize}px`;
-        }
+      shuffle(tiles).forEach(tile => tilePool.appendChild(tile));
 
-        // 드래그 시작
-        function dragStart(e) {
-            if (!gameStarted || this.classList.contains('empty')) return;
-            draggedTile = this;
-            draggedTile.classList.add('dragging');
-            dragOffsetX = e.clientX - draggedTile.getBoundingClientRect().left;
-            dragOffsetY = e.clientY - draggedTile.getBoundingClientRect().top;
-        }
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        const slot = document.createElement('div');
+        slot.classList.add('tile-slot');
+        slot.style.border = '1px dashed #ccc';
+        slot.style.backgroundColor = '#fafafa';
 
-        // 드래그 중
-        function drag(e) {
-            if (!draggedTile) return;
-            const x = e.clientX - dragOffsetX;
-            const y = e.clientY - dragOffsetY;
-            draggedTile.style.left = `${x}px`;
-            draggedTile.style.top = `${y}px`;
-        }
+        slot.addEventListener('dragover', (e) => e.preventDefault());
 
-        // 드래그 종료
-        function dragEnd(e) {
-            if (!draggedTile) return;
-            draggedTile.classList.remove('dragging');
+        slot.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const [row, col] = e.dataTransfer.getData('text/plain').split(',');
+          const draggedTile = Array.from(tilePool.children).find(t => t.dataset.row == row && t.dataset.col == col);
 
-            const draggedRow = parseInt(draggedTile.dataset.row);
-            const draggedCol = parseInt(draggedTile.dataset.col);
-            const emptyRow = emptyTile.row;
-            const emptyCol = emptyTile.col;
+          if (!draggedTile) return;
 
-            // 빈 공간과 인접한 타일만 이동 가능
-            if (
-                (Math.abs(draggedRow - emptyRow) === 1 && draggedCol === emptyCol) ||
-                (draggedRow === emptyRow && Math.abs(draggedCol - emptyCol) === 1)
-            ) {
-                // 위치 교환
-                tiles.forEach(tileInfo => {
-                    if (parseInt(tileInfo.element.dataset.row) === draggedRow && parseInt(tileInfo.element.dataset.col) === draggedCol) {
-                        tileInfo.row = emptyRow;
-                        tileInfo.col = emptyCol;
-                        positionTile(tileInfo.element, emptyRow, emptyCol);
-                        tileInfo.element.dataset.row = emptyRow;
-                        tileInfo.element.dataset.col = emptyCol;
-                    } else if (tileInfo.row === emptyRow && tileInfo.col === emptyCol) {
-                        tileInfo.row = draggedRow;
-                        tileInfo.col = draggedCol;
-                        positionTile(tileInfo.element, draggedRow, draggedCol);
-                        tileInfo.element.dataset.row = draggedRow;
-                        tileInfo.element.dataset.col = draggedCol;
-                    }
-                });
-
-                emptyTile.row = draggedRow;
-                emptyTile.col = draggedCol;
-
-                moveCount++;
-                movesElement.textContent = `이동 횟수: ${moveCount}`;
-                checkWin();
-            } else {
-                // 원래 위치로 되돌리기
-                positionTile(draggedTile, draggedRow, draggedCol);
-            }
-
-            draggedTile = null;
-        }
-
-        // 타일 섞기 함수
-        function shuffleTiles() {
-            for (let i = 0; i < 200; i++) {
-                const possibleMoves = [];
-
-                if (emptyTile.row > 0) possibleMoves.push({ row: emptyTile.row - 1, col: emptyTile.col });
-                if (emptyTile.row < gridSize - 1) possibleMoves.push({ row: emptyTile.row + 1, col: emptyTile.col });
-                if (emptyTile.col > 0) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col - 1 });
-                if (emptyTile.col < gridSize - 1) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col + 1 });
-
-                const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-
-                if (move) {
-                    // 타일 찾기 및 위치 교환
-                    tiles.forEach(tileInfo => {
-                        if (tileInfo.row === move.row && tileInfo.col === move.col) {
-                            const tempRow = tileInfo.row;
-                            const tempCol = tileInfo.col;
-                            tileInfo.row = emptyTile.row;
-                            tileInfo.col = emptyTile.col;
-                            positionTile(tileInfo.element, tileInfo.row, tileInfo.col);
-                            tileInfo.element.dataset.row = tileInfo.row;
-                            tileInfo.element.dataset.col = tileInfo.col;
-                            emptyTile.row = tempRow;
-                            emptyTile.col = tempCol;
-                        } else if (tileInfo.row === emptyTile.row && tileInfo.col === emptyTile.col) {
-                            positionTile(tileInfo.element, emptyTile.row, emptyTile.col);
-                            tileInfo.element.dataset.row = emptyTile.row;
-                            tileInfo.element.dataset.col = emptyTile.col;
-                        }
-                    });
-                }
-            }
-
-            // 타일 엘리먼트 업데이트 (빈 공간 클래스)
-            tiles.forEach(tileInfo => {
-                tileInfo.element.classList.remove('empty');
-                if (tileInfo.row === emptyTile.row && tileInfo.col === emptyTile.col) {
-                    tileInfo.element.classList.add('empty');
-                    tileInfo.element.removeEventListener('mousedown', dragStart); // 빈 공간은 드래그 불가
-                } else {
-                    tileInfo.element.addEventListener('mousedown', dragStart); // 다시 드래그 가능하도록 설정
-                }
-            });
-
-            moveCount = 0;
-            movesElement.textContent = '이동 횟수: 0';
-        }
-
-        // 승리 확인 함수
-        function checkWin() {
-            const isWin = tiles.every(tile => {
-                return parseInt(tile.element.dataset.row) === tile.correctRow && parseInt(tile.element.dataset.col) === tile.correctCol;
-            });
-
-            if (isWin) {
-                gameStarted = false;
-                winMessage.style.display = 'block';
-            }
-        }
-
-        // 미리보기 토글 기능
-        let previewVisible = true;
-        previewButton.addEventListener('click', () => {
-            previewVisible = !previewVisible;
-            previewImage.style.display = previewVisible ? 'block' : 'none';
-            previewButton.textContent = previewVisible ? '미리보기 숨기기' : '미리보기 보기';
+          if (checkCorrect(slot, row, col)) {
+            slot.appendChild(draggedTile);
+            draggedTile.style.position = 'relative';
+            draggedTile.style.width = '100%';
+            draggedTile.style.height = '100%';
+            checkWin();
+          } else {
+            draggedTile.style.transform = 'translateX(10px)';
+            setTimeout(() => draggedTile.style.transform = 'translateX(0)', 100);
+          }
         });
 
-        // 게임 시작 버튼
-        startButton.addEventListener('click', () => {
-            if (!gameStarted) {
-                gameStarted = true;
-                startButton.textContent = '다시 섞기';
-                shuffleTiles();
-            } else {
-                shuffleTiles();
-            }
-        });
+        puzzleBoard.appendChild(slot);
+      }
+    }
 
-        // 페이지 로드 시 게임 초기화
-        window.addEventListener('load', initializeGame);
-    </script>
+    function checkCorrect(slot, row, col) {
+      const slotIndex = Array.from(slot.parentNode.children).indexOf(slot);
+      const slotRow = Math.floor(slotIndex / gridSize);
+      const slotCol = slotIndex % gridSize;
+      return (parseInt(row) === slotRow && parseInt(col) === slotCol);
+    }
+
+    function checkWin() {
+      const slots = document.querySelectorAll('.puzzle-board .tile-slot');
+      const allFilled = Array.from(slots).every(slot => slot.children.length > 0);
+      if (allFilled) {
+        clearInterval(timerInterval);
+        document.getElementById('win-message').textContent = `🎉 퍼즐 완성! 시간: ${timer}초!`;
+      }
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+
 </body>
+
 </html>
