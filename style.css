@@ -113,9 +113,17 @@ button:hover {
   align-content: flex-start;
 }
 
-.tile-container, .puzzle-board {
+.tile-container {
   min-height: 300px;
   min-width: 300px;
+  gap: 4px;
+}
+
+.puzzle-board {
+  min-height: 300px;
+  min-width: 300px;
+  display: grid !important; /* 중요: 그리드 레이아웃 강제 적용 */
+  gap: 4px;
 }
 
 .preview {
@@ -134,7 +142,6 @@ button:hover {
 }
 
 .tile {
-  margin: 2px;
   background-repeat: no-repeat;
   cursor: grab;
   transition: all 0.2s ease;
@@ -151,6 +158,26 @@ button:hover {
   opacity: 0.7;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
   transform: scale(1.1);
+}
+
+.tile.wrong {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.tile.complete {
+  animation: pulse 0.5s;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .puzzle-board .dropzone {
