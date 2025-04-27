@@ -81,6 +81,7 @@
             height: 150px;
             margin-top: 20px;
             border: 2px solid #3366cc;
+            object-fit: cover;
         }
 
         @media (max-width: 600px) {
@@ -104,7 +105,7 @@
         </div>
         <div class="moves" id="moves">이동 횟수: 0</div>
         <div class="win-message" id="win-message">축하합니다! 퍼즐을 완성했습니다!</div>
-        <img src="/api/placeholder/150/150" alt="Preview" class="preview" id="preview-image">
+        <img src="config/image1" alt="미니언 이미지 미리보기" class="preview" id="preview-image">
     </div>
 
     <script>
@@ -124,8 +125,8 @@
         const winMessage = document.getElementById('win-message');
         const previewImage = document.getElementById('preview-image');
 
-        // 미니언 이미지 URL (실제 게임에서는 이미지를 직접 호스팅하거나 다른 방법으로 제공해야 합니다)
-        const imageUrl = '/api/placeholder/300/300'; // 여기에 실제 미니언 이미지 URL을 넣어야 합니다
+        // 실제 미니언 이미지 경로
+        const imageUrl = 'config/image1';
 
         // 게임 초기화
         function initializeGame() {
@@ -177,9 +178,6 @@
                 row: tile.row,
                 col: tile.col
             }));
-            
-            // 미리보기 이미지 설정
-            previewImage.src = imageUrl;
         }
 
         // 타일 위치 설정 함수
@@ -257,9 +255,12 @@
             }
         }
 
-        // 미리보기 기능
+        // 미리보기 토글 기능
+        let previewVisible = true;
         previewButton.addEventListener('click', () => {
-            previewImage.style.display = previewImage.style.display === 'none' ? 'block' : 'none';
+            previewVisible = !previewVisible;
+            previewImage.style.display = previewVisible ? 'block' : 'none';
+            previewButton.textContent = previewVisible ? '미리보기 숨기기' : '미리보기 보기';
         });
 
         // 게임 시작 버튼
