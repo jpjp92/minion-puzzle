@@ -13,41 +13,53 @@
             background-color: #f0f8ff;
             padding: 20px;
         }
-        
+
         h1 {
             color: #3366cc;
             margin-bottom: 20px;
         }
-        
+
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
         }
-        
+
         .puzzle-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 400px; /* 더 크게 변경 */
+            height: 400px; /* 더 크게 변경 */
             border: 3px solid #3366cc;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
-        
+
         .tile {
             position: absolute;
             border: 1px solid white;
             transition: all 0.2s ease-in-out;
-            background-size: 300px 300px;
-            cursor: pointer;
+            background-size: 400px 400px; /* background-size도 변경 */
+            cursor: grab; /* 드래그 가능 커서 */
+            user-select: none; /* 텍스트 선택 방지 */
         }
-        
+
+        .tile.dragging {
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        .tile.empty {
+            background-color: #ddd;
+            border: 1px dashed #aaa;
+            cursor: default;
+        }
+
         .controls {
             display: flex;
             gap: 15px;
             margin-top: 10px;
         }
-        
+
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -58,16 +70,16 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         button:hover {
             background-color: #254e9e;
         }
-        
+
         .moves {
             margin-top: 10px;
             font-size: 18px;
         }
-        
+
         .win-message {
             font-size: 24px;
             color: #3366cc;
@@ -75,10 +87,10 @@
             margin-top: 15px;
             display: none;
         }
-        
+
         .preview {
-            width: 150px;
-            height: 150px;
+            width: 200px; /* 더 크게 변경 */
+            height: 200px; /* 더 크게 변경 */
             margin-top: 20px;
             border: 2px solid #3366cc;
             object-fit: cover;
@@ -86,11 +98,15 @@
 
         @media (max-width: 600px) {
             .puzzle-container {
-                width: 250px;
-                height: 250px;
+                width: 300px; /* 반응형으로 조절 */
+                height: 300px; /* 반응형으로 조절 */
             }
             .tile {
-                background-size: 250px 250px;
+                background-size: 300px 300px; /* 반응형으로 조절 */
+            }
+            .preview {
+                width: 150px; /* 반응형으로 조절 */
+                height: 150px; /* 반응형으로 조절 */
             }
         }
     </style>
@@ -116,6 +132,8 @@
         let moveCount = 0;
         let gameStarted = false;
         let correctPositions = [];
+        let draggedTile = null;
+        let dragOffsetX, dragOffsetY;
 
         // DOM 요소
         const puzzleContainer = document.getElementById('puzzle');
@@ -135,33 +153,30 @@
             moveCount = 0;
             movesElement.textContent = '이동 횟수: 0';
             winMessage.style.display = 'none';
-            
+
             const tileSize = puzzleContainer.offsetWidth / gridSize;
-            
+
             // 타일 생성
             for (let row = 0; row < gridSize; row++) {
                 for (let col = 0; col < gridSize; col++) {
-                    if (row === gridSize - 1 && col === gridSize - 1) {
-                        // 빈 타일은 생성하지 않음
-                        continue;
-                    }
-                    
                     const tile = document.createElement('div');
                     tile.className = 'tile';
                     tile.style.width = `${tileSize}px`;
                     tile.style.height = `${tileSize}px`;
                     tile.style.backgroundImage = `url(${imageUrl})`;
                     tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-                    
-                    // 타일 위치 설정
+                    tile.dataset.row = row;
+                    tile.dataset.col = col;
+
+                    // 마지막 타일은 빈 공간
+                    if (row === emptyTile.row && col === emptyTile.col) {
+                        tile.classList.add('empty');
+                    } else {
+                        // 드래그 이벤트 리스너 추가
+                        tile.addEventListener('mousedown', dragStart);
+                    }
+
                     positionTile(tile, row, col);
-                    
-                    // 클릭 이벤트 추가
-                    tile.addEventListener('click', () => {
-                        if (!gameStarted) return;
-                        moveTile(row, col);
-                    });
-                    
                     puzzleContainer.appendChild(tile);
                     tiles.push({
                         element: tile,
@@ -172,12 +187,16 @@
                     });
                 }
             }
-            
+
             // 올바른 위치 저장
             correctPositions = tiles.map(tile => ({
-                row: tile.row,
-                col: tile.col
+                row: parseInt(tile.element.dataset.row),
+                col: parseInt(tile.element.dataset.col)
             }));
+
+            // 드롭 영역 이벤트 리스너 추가 (puzzleContainer 전체)
+            puzzleContainer.addEventListener('mouseup', dragEnd);
+            puzzleContainer.addEventListener('mousemove', drag);
         }
 
         // 타일 위치 설정 함수
@@ -187,58 +206,115 @@
             tile.style.left = `${col * tileSize}px`;
         }
 
-        // 타일 이동 함수
-        function moveTile(row, col) {
-            // 빈 타일 주변의 타일만 이동 가능
+        // 드래그 시작
+        function dragStart(e) {
+            if (!gameStarted || this.classList.contains('empty')) return;
+            draggedTile = this;
+            draggedTile.classList.add('dragging');
+            dragOffsetX = e.clientX - draggedTile.getBoundingClientRect().left;
+            dragOffsetY = e.clientY - draggedTile.getBoundingClientRect().top;
+        }
+
+        // 드래그 중
+        function drag(e) {
+            if (!draggedTile) return;
+            const x = e.clientX - dragOffsetX;
+            const y = e.clientY - dragOffsetY;
+            draggedTile.style.left = `${x}px`;
+            draggedTile.style.top = `${y}px`;
+        }
+
+        // 드래그 종료
+        function dragEnd(e) {
+            if (!draggedTile) return;
+            draggedTile.classList.remove('dragging');
+
+            const draggedRow = parseInt(draggedTile.dataset.row);
+            const draggedCol = parseInt(draggedTile.dataset.col);
+            const emptyRow = emptyTile.row;
+            const emptyCol = emptyTile.col;
+
+            // 빈 공간과 인접한 타일만 이동 가능
             if (
-                (row === emptyTile.row && Math.abs(col - emptyTile.col) === 1) ||
-                (col === emptyTile.col && Math.abs(row - emptyTile.row) === 1)
+                (Math.abs(draggedRow - emptyRow) === 1 && draggedCol === emptyCol) ||
+                (draggedRow === emptyRow && Math.abs(draggedCol - emptyCol) === 1)
             ) {
-                // 타일 찾기
-                const tileIndex = tiles.findIndex(t => t.row === row && t.col === col);
-                if (tileIndex !== -1) {
-                    // 타일 위치 업데이트
-                    const tile = tiles[tileIndex];
-                    
-                    // 위치 교환
-                    const oldRow = tile.row;
-                    const oldCol = tile.col;
-                    tile.row = emptyTile.row;
-                    tile.col = emptyTile.col;
-                    emptyTile.row = oldRow;
-                    emptyTile.col = oldCol;
-                    
-                    // 타일 시각적 위치 업데이트
-                    positionTile(tile.element, tile.row, tile.col);
-                    
-                    // 이동 횟수 증가
-                    moveCount++;
-                    movesElement.textContent = `이동 횟수: ${moveCount}`;
-                    
-                    // 승리 확인
-                    checkWin();
-                }
+                // 위치 교환
+                tiles.forEach(tileInfo => {
+                    if (parseInt(tileInfo.element.dataset.row) === draggedRow && parseInt(tileInfo.element.dataset.col) === draggedCol) {
+                        tileInfo.row = emptyRow;
+                        tileInfo.col = emptyCol;
+                        positionTile(tileInfo.element, emptyRow, emptyCol);
+                        tileInfo.element.dataset.row = emptyRow;
+                        tileInfo.element.dataset.col = emptyCol;
+                    } else if (tileInfo.row === emptyRow && tileInfo.col === emptyCol) {
+                        tileInfo.row = draggedRow;
+                        tileInfo.col = draggedCol;
+                        positionTile(tileInfo.element, draggedRow, draggedCol);
+                        tileInfo.element.dataset.row = draggedRow;
+                        tileInfo.element.dataset.col = draggedCol;
+                    }
+                });
+
+                emptyTile.row = draggedRow;
+                emptyTile.col = draggedCol;
+
+                moveCount++;
+                movesElement.textContent = `이동 횟수: ${moveCount}`;
+                checkWin();
+            } else {
+                // 원래 위치로 되돌리기
+                positionTile(draggedTile, draggedRow, draggedCol);
             }
+
+            draggedTile = null;
         }
 
         // 타일 섞기 함수
         function shuffleTiles() {
-            // 많은 무작위 이동으로 타일 섞기
             for (let i = 0; i < 200; i++) {
                 const possibleMoves = [];
-                
-                // 빈 타일 주변의 가능한 모든 이동 찾기
+
                 if (emptyTile.row > 0) possibleMoves.push({ row: emptyTile.row - 1, col: emptyTile.col });
                 if (emptyTile.row < gridSize - 1) possibleMoves.push({ row: emptyTile.row + 1, col: emptyTile.col });
                 if (emptyTile.col > 0) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col - 1 });
                 if (emptyTile.col < gridSize - 1) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col + 1 });
-                
-                // 무작위 이동 선택 및 실행
+
                 const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-                moveTile(move.row, move.col);
+
+                if (move) {
+                    // 타일 찾기 및 위치 교환
+                    tiles.forEach(tileInfo => {
+                        if (tileInfo.row === move.row && tileInfo.col === move.col) {
+                            const tempRow = tileInfo.row;
+                            const tempCol = tileInfo.col;
+                            tileInfo.row = emptyTile.row;
+                            tileInfo.col = emptyTile.col;
+                            positionTile(tileInfo.element, tileInfo.row, tileInfo.col);
+                            tileInfo.element.dataset.row = tileInfo.row;
+                            tileInfo.element.dataset.col = tileInfo.col;
+                            emptyTile.row = tempRow;
+                            emptyTile.col = tempCol;
+                        } else if (tileInfo.row === emptyTile.row && tileInfo.col === emptyTile.col) {
+                            positionTile(tileInfo.element, emptyTile.row, emptyTile.col);
+                            tileInfo.element.dataset.row = emptyTile.row;
+                            tileInfo.element.dataset.col = emptyTile.col;
+                        }
+                    });
+                }
             }
-            
-            // 이동 횟수 리셋
+
+            // 타일 엘리먼트 업데이트 (빈 공간 클래스)
+            tiles.forEach(tileInfo => {
+                tileInfo.element.classList.remove('empty');
+                if (tileInfo.row === emptyTile.row && tileInfo.col === emptyTile.col) {
+                    tileInfo.element.classList.add('empty');
+                    tileInfo.element.removeEventListener('mousedown', dragStart); // 빈 공간은 드래그 불가
+                } else {
+                    tileInfo.element.addEventListener('mousedown', dragStart); // 다시 드래그 가능하도록 설정
+                }
+            });
+
             moveCount = 0;
             movesElement.textContent = '이동 횟수: 0';
         }
@@ -246,9 +322,9 @@
         // 승리 확인 함수
         function checkWin() {
             const isWin = tiles.every(tile => {
-                return tile.row === tile.correctRow && tile.col === tile.correctCol;
+                return parseInt(tile.element.dataset.row) === tile.correctRow && parseInt(tile.element.dataset.col) === tile.correctCol;
             });
-            
+
             if (isWin) {
                 gameStarted = false;
                 winMessage.style.display = 'block';
