@@ -38,8 +38,11 @@ function startGame() {
   // UI 초기화
   document.getElementById('timer').textContent = `시간: 0초`;
   document.getElementById('moves').textContent = `이동 횟수: 0`;
-  document.getElementById('message').textContent = '';
-  document.getElementById('message').className = 'message';
+  
+  if (document.getElementById('message')) {
+    document.getElementById('message').textContent = '';
+    document.getElementById('message').className = 'message';
+  }
   
   // 퍼즐 설정
   setupPuzzle();
@@ -65,7 +68,7 @@ function setupPuzzle() {
   
   // 타일 크기 계산 (컨테이너 크기에 맞춰서)
   const containerSize = 300; // 기본 컨테이너 크기
-  const tileSize = (containerSize / gridSize) - 4; // 마진 고려하여 계산
+  const tileSize = Math.floor(containerSize / gridSize) - 4; // 마진 고려하여 계산
   
   // 타일 배열 초기화
   tiles = [];
@@ -77,6 +80,18 @@ function setupPuzzle() {
   
   // 타일 섞기
   shuffleArray(tiles);
+  
+  // 타일 컨테이너 스타일 설정
+  tileContainer.style.width = `${containerSize}px`;
+  tileContainer.style.height = `${containerSize}px`;
+  
+  // 퍼즐 보드 스타일 설정
+  puzzleBoard.style.width = `${containerSize}px`;
+  puzzleBoard.style.height = `${containerSize}px`;
+  puzzleBoard.style.display = 'grid';
+  puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+  puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+  puzzleBoard.style.gap = '4px';
   
   // 타일 생성
   tiles.forEach(tile => {
@@ -116,6 +131,18 @@ function setupPuzzle() {
       
       puzzleBoard.appendChild(dropzone);
     }
+  }
+  
+  // CSS Grid로 퍼즐 보드 모양 잡기
+  if (gridSize === 3) {
+    puzzleBoard.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    puzzleBoard.style.gridTemplateRows = 'repeat(3, 1fr)';
+  } else if (gridSize === 4) {
+    puzzleBoard.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    puzzleBoard.style.gridTemplateRows = 'repeat(4, 1fr)';
+  } else if (gridSize === 5) {
+    puzzleBoard.style.gridTemplateColumns = 'repeat(5, 1fr)';
+    puzzleBoard.style.gridTemplateRows = 'repeat(5, 1fr)';
   }
 }
 
@@ -189,14 +216,18 @@ function drop(e) {
       draggedTile.setAttribute('draggable', false);
       
       // 성공 메시지 표시
-      showMessage('정확한 위치입니다!', 'success', 1000);
+      if (document.getElementById('message')) {
+        showMessage('정확한 위치입니다!', 'success', 1000);
+      }
       
       // 퍼즐 완성 체크
       checkComplete();
     }
   } else {
     // 잘못된 위치에 놓은 경우
-    showMessage('잘못된 위치입니다. 다시 시도하세요.', 'error', 1000);
+    if (document.getElementById('message')) {
+      showMessage('잘못된 위치입니다. 다시 시도하세요.', 'error', 1000);
+    }
     
     // 틀린 위치임을 시각적으로 표시 (흔들림 효과)
     draggedTile.classList.add('wrong');
@@ -208,6 +239,8 @@ function drop(e) {
 
 function showMessage(text, type, duration = 3000) {
   const messageEl = document.getElementById('message');
+  if (!messageEl) return;
+  
   messageEl.textContent = text;
   messageEl.className = `message ${type}`;
   
@@ -227,7 +260,13 @@ function checkComplete() {
     isGameStarted = false;
     
     // 축하 메시지 표시
-    showMessage(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success');
+    if (document.getElementById('message')) {
+      showMessage(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success');
+    } else {
+      setTimeout(() => {
+        alert(`축하합니다! 퍼즐을 완성했습니다! 걸린 시간: ${time}초, 이동 횟수: ${moves}회`);
+      }, 100);
+    }
     
     // 애니메이션 효과 (모든 타일에 완성 효과 추가)
     placedTiles.forEach((tile, idx) => {
