@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미니언 슬라이딩 퍼즐</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f8ff;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #3366cc;
+            margin-bottom: 20px;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .puzzle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 3px solid #3366cc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tile {
+            position: absolute;
+            border: 1px solid white;
+            transition: all 0.2s ease-in-out;
+            background-size: 300px 300px;
+            cursor: pointer;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3366cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #254e9e;
+        }
+        
+        .moves {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        
+        .win-message {
+            font-size: 24px;
+            color: #3366cc;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .preview {
+            width: 150px;
+            height: 150px;
+            margin-top: 20px;
+            border: 2px solid #3366cc;
+        }
+
+        @media (max-width: 600px) {
+            .puzzle-container {
+                width: 250px;
+                height: 250px;
+            }
+            .tile {
+                background-size: 250px 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>미니언 슬라이딩 퍼즐</h1>
+    <div class="game-container">
+        <div class="puzzle-container" id="puzzle"></div>
+        <div class="controls">
+            <button id="start-button">게임 시작</button>
+            <button id="preview-button">미리보기</button>
+        </div>
+        <div class="moves" id="moves">이동 횟수: 0</div>
+        <div class="win-message" id="win-message">축하합니다! 퍼즐을 완성했습니다!</div>
+        <img src="/api/placeholder/150/150" alt="Preview" class="preview" id="preview-image">
+    </div>
+
+    <script>
+        // 게임 상태 변수
+        const gridSize = 3;
+        let tiles = [];
+        let emptyTile = { row: gridSize - 1, col: gridSize - 1 };
+        let moveCount = 0;
+        let gameStarted = false;
+        let correctPositions = [];
+
+        // DOM 요소
+        const puzzleContainer = document.getElementById('puzzle');
+        const startButton = document.getElementById('start-button');
+        const previewButton = document.getElementById('preview-button');
+        const movesElement = document.getElementById('moves');
+        const winMessage = document.getElementById('win-message');
+        const previewImage = document.getElementById('preview-image');
+
+        // 미니언 이미지 URL (실제 게임에서는 이미지를 직접 호스팅하거나 다른 방법으로 제공해야 합니다)
+        const imageUrl = '/api/placeholder/300/300'; // 여기에 실제 미니언 이미지 URL을 넣어야 합니다
+
+        // 게임 초기화
+        function initializeGame() {
+            puzzleContainer.innerHTML = '';
+            tiles = [];
+            moveCount = 0;
+            movesElement.textContent = '이동 횟수: 0';
+            winMessage.style.display = 'none';
+            
+            const tileSize = puzzleContainer.offsetWidth / gridSize;
+            
+            // 타일 생성
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (row === gridSize - 1 && col === gridSize - 1) {
+                        // 빈 타일은 생성하지 않음
+                        continue;
+                    }
+                    
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.style.width = `${tileSize}px`;
+                    tile.style.height = `${tileSize}px`;
+                    tile.style.backgroundImage = `url(${imageUrl})`;
+                    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
+                    
+                    // 타일 위치 설정
+                    positionTile(tile, row, col);
+                    
+                    // 클릭 이벤트 추가
+                    tile.addEventListener('click', () => {
+                        if (!gameStarted) return;
+                        moveTile(row, col);
+                    });
+                    
+                    puzzleContainer.appendChild(tile);
+                    tiles.push({
+                        element: tile,
+                        row: row,
+                        col: col,
+                        correctRow: row,
+                        correctCol: col
+                    });
+                }
+            }
+            
+            // 올바른 위치 저장
+            correctPositions = tiles.map(tile => ({
+                row: tile.row,
+                col: tile.col
+            }));
+            
+            // 미리보기 이미지 설정
+            previewImage.src = imageUrl;
+        }
+
+        // 타일 위치 설정 함수
+        function positionTile(tile, row, col) {
+            const tileSize = puzzleContainer.offsetWidth / gridSize;
+            tile.style.top = `${row * tileSize}px`;
+            tile.style.left = `${col * tileSize}px`;
+        }
+
+        // 타일 이동 함수
+        function moveTile(row, col) {
+            // 빈 타일 주변의 타일만 이동 가능
+            if (
+                (row === emptyTile.row && Math.abs(col - emptyTile.col) === 1) ||
+                (col === emptyTile.col && Math.abs(row - emptyTile.row) === 1)
+            ) {
+                // 타일 찾기
+                const tileIndex = tiles.findIndex(t => t.row === row && t.col === col);
+                if (tileIndex !== -1) {
+                    // 타일 위치 업데이트
+                    const tile = tiles[tileIndex];
+                    
+                    // 위치 교환
+                    const oldRow = tile.row;
+                    const oldCol = tile.col;
+                    tile.row = emptyTile.row;
+                    tile.col = emptyTile.col;
+                    emptyTile.row = oldRow;
+                    emptyTile.col = oldCol;
+                    
+                    // 타일 시각적 위치 업데이트
+                    positionTile(tile.element, tile.row, tile.col);
+                    
+                    // 이동 횟수 증가
+                    moveCount++;
+                    movesElement.textContent = `이동 횟수: ${moveCount}`;
+                    
+                    // 승리 확인
+                    checkWin();
+                }
+            }
+        }
+
+        // 타일 섞기 함수
+        function shuffleTiles() {
+            // 많은 무작위 이동으로 타일 섞기
+            for (let i = 0; i < 200; i++) {
+                const possibleMoves = [];
+                
+                // 빈 타일 주변의 가능한 모든 이동 찾기
+                if (emptyTile.row > 0) possibleMoves.push({ row: emptyTile.row - 1, col: emptyTile.col });
+                if (emptyTile.row < gridSize - 1) possibleMoves.push({ row: emptyTile.row + 1, col: emptyTile.col });
+                if (emptyTile.col > 0) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col - 1 });
+                if (emptyTile.col < gridSize - 1) possibleMoves.push({ row: emptyTile.row, col: emptyTile.col + 1 });
+                
+                // 무작위 이동 선택 및 실행
+                const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                moveTile(move.row, move.col);
+            }
+            
+            // 이동 횟수 리셋
+            moveCount = 0;
+            movesElement.textContent = '이동 횟수: 0';
+        }
+
+        // 승리 확인 함수
+        function checkWin() {
+            const isWin = tiles.every(tile => {
+                return tile.row === tile.correctRow && tile.col === tile.correctCol;
+            });
+            
+            if (isWin) {
+                gameStarted = false;
+                winMessage.style.display = 'block';
+            }
+        }
+
+        // 미리보기 기능
+        previewButton.addEventListener('click', () => {
+            previewImage.style.display = previewImage.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // 게임 시작 버튼
+        startButton.addEventListener('click', () => {
+            if (!gameStarted) {
+                gameStarted = true;
+                startButton.textContent = '다시 섞기';
+                shuffleTiles();
+            } else {
+                shuffleTiles();
+            }
+        });
+
+        // 페이지 로드 시 게임 초기화
+        window.addEventListener('load', initializeGame);
+    </script>
+</body>
+</html>
