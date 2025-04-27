@@ -1,0 +1,80 @@
+body {
+  text-align: center;
+  background-color: #eaf4ff;
+  font-family: 'Arial', sans-serif;
+}
+
+h1 {
+  margin-top: 20px;
+  color: #3366cc;
+}
+
+.controls button {
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #3366cc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.controls button:hover {
+  background-color: #5588dd;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  margin-top: 20px;
+  gap: 30px;
+}
+
+.tile-container, .puzzle-board, .preview {
+  border: 2px dashed #3366cc;
+  background-color: #eef7ff;
+  padding: 10px;
+  width: 300px;
+  min-height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.preview img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.tile {
+  width: 90px;
+  height: 90px;
+  margin: 5px;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+  cursor: grab;
+  transition: transform 0.2s;
+}
+
+.tile.dragging {
+  opacity: 0.5;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.puzzle-board .dropzone {
+  width: 90px;
+  height: 90px;
+  margin: 5px;
+  background-color: white;
+  border: 1px dotted #ccc;
+  box-sizing: border-box;
+}
+
+#timer {
+  margin-top: 20px;
+  font-size: 20px;
+}
