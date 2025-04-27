@@ -1,250 +1,123 @@
-<!DOCTYPE html>
-<html lang="ko">
+let gridSize = 3;
+let originalImage = '3ad4a41a-5ae6-42e1-a031-c42a13e478a7.png';
+let tiles = [];
+let timerInterval;
+let time = 0;
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>드래그 퍼즐 게임</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f0f8ff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+function setGridSize(size) {
+  gridSize = size;
+}
+
+function startGame() {
+  clearInterval(timerInterval);
+  time = 0;
+  document.getElementById('timer').textContent = `시간: 0초`;
+
+  setupPuzzle();
+  startTimer();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    time++;
+    document.getElementById('timer').textContent = `시간: ${time}초`;
+  }, 1000);
+}
+
+function setupPuzzle() {
+  const tileContainer = document.getElementById('tile-container');
+  const puzzleBoard = document.getElementById('puzzle-board');
+  tileContainer.innerHTML = '';
+  puzzleBoard.innerHTML = '';
+
+  tiles = [];
+
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      tiles.push({ x, y });
     }
+  }
 
-    h1 {
-      color: #3366cc;
-      margin-bottom: 20px;
-    }
+  shuffleArray(tiles);
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+  tiles.forEach(tile => {
+    const div = document.createElement('div');
+    div.className = 'tile';
+    div.style.backgroundImage = `url(${originalImage})`;
+    div.style.backgroundPosition = `${-tile.x * (300 / gridSize)}px ${-tile.y * (300 / gridSize)}px`;
+    div.style.backgroundSize = `${300}px ${300}px`;
 
-    button {
-      padding: 10px 15px;
-      background: #3366cc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
+    div.setAttribute('draggable', true);
+    div.dataset.x = tile.x;
+    div.dataset.y = tile.y;
 
-    button:hover {
-      background: #254e9e;
-    }
+    div.addEventListener('dragstart', dragStart);
+    div.addEventListener('dragend', dragEnd);
 
-    .game-area {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-      align-items: start;
-      width: 100%;
-      max-width: 1200px;
-    }
+    tileContainer.appendChild(div);
+  });
 
-    .tile-pool, .preview-container {
-      width: 200px;
-      min-height: 400px;
-      border: 2px dashed #3366cc;
-      padding: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      align-items: start;
-      background-color: #e6f0ff;
-    }
+  for (let i = 0; i < gridSize * gridSize; i++) {
+    const dropzone = document.createElement('div');
+    dropzone.className = 'dropzone';
+    dropzone.addEventListener('dragover', dragOver);
+    dropzone.addEventListener('drop', drop);
+    puzzleBoard.appendChild(dropzone);
+  }
+}
 
-    .puzzle-board {
-      position: relative;
-      background-color: #ffffff;
-      border: 3px solid #3366cc;
-      display: grid;
-      gap: 2px;
-    }
+function dragStart(e) {
+  e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
+  e.target.classList.add('dragging');
+}
 
-    .tile {
-      width: 100%;
-      height: 100%;
-      background-image: url('config/image1.jpeg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      cursor: grab;
-      transition: transform 0.2s, opacity 0.2s;
-    }
+function dragEnd(e) {
+  e.target.classList.remove('dragging');
+}
 
-    .tile.dragging {
-      opacity: 0.7;
-      transform: scale(1.05);
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
+function dragOver(e) {
+  e.preventDefault();
+}
 
-    .preview-container img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-    }
+function drop(e) {
+  e.preventDefault();
+  const data = e.dataTransfer.getData('text/plain').split(',');
+  const x = parseInt(data[0]);
+  const y = parseInt(data[1]);
+  const draggedTile = document.querySelector(`.tile[data-x="${x}"][data-y="${y}"]`);
 
-    .timer {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #333;
-    }
+  const index = Array.from(this.parentNode.children).indexOf(this);
+  const correctX = index % gridSize;
+  const correctY = Math.floor(index / gridSize);
 
-    .win-message {
-      margin-top: 20px;
-      font-size: 24px;
-      color: #3366cc;
-      font-weight: bold;
-    }
-  </style>
-</head>
+  if (x === correctX && y === correctY) {
+    this.appendChild(draggedTile);
+    draggedTile.style.position = 'relative';
+    draggedTile.style.left = '0';
+    draggedTile.style.top = '0';
+    draggedTile.setAttribute('draggable', false);
+    checkComplete();
+  } else {
+    draggedTile.style.transform = 'translate(10px, 10px)';
+    setTimeout(() => {
+      draggedTile.style.transform = 'translate(0, 0)';
+    }, 200);
+  }
+}
 
-<body>
-  <h1>드래그 퍼즐 게임</h1>
+function checkComplete() {
+  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
+  if (placedTiles.length === gridSize * gridSize) {
+    clearInterval(timerInterval);
+    setTimeout(() => {
+      alert(`퍼즐 완성! 걸린 시간: ${time}초`);
+    }, 100);
+  }
+}
 
-  <div class="controls">
-    <button onclick="setDifficulty(3)">3x3</button>
-    <button onclick="setDifficulty(4)">4x4</button>
-    <button onclick="setDifficulty(5)">5x5</button>
-    <button onclick="startGame()">게임 시작</button>
-  </div>
-
-  <div class="timer" id="timer">시간: 0초</div>
-
-  <div class="game-area">
-    <div class="tile-pool" id="tile-pool"></div>
-    <div class="puzzle-board" id="puzzle-board"></div>
-    <div class="preview-container">
-      <img src="config/image1.jpeg" alt="미리보기">
-    </div>
-  </div>
-
-  <div class="win-message" id="win-message"></div>
-
-  <script>
-    let gridSize = 3;
-    let timer = 0;
-    let timerInterval;
-
-    function setDifficulty(size) {
-      gridSize = size;
-    }
-
-    function startGame() {
-      clearInterval(timerInterval);
-      timer = 0;
-      document.getElementById('timer').innerText = `시간: 0초`;
-      timerInterval = setInterval(() => {
-        timer++;
-        document.getElementById('timer').innerText = `시간: ${timer}초`;
-      }, 1000);
-
-      generatePuzzle();
-    }
-
-    function generatePuzzle() {
-      const tilePool = document.getElementById('tile-pool');
-      const puzzleBoard = document.getElementById('puzzle-board');
-      const winMessage = document.getElementById('win-message');
-      tilePool.innerHTML = '';
-      puzzleBoard.innerHTML = '';
-      winMessage.textContent = '';
-
-      puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-      puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-      puzzleBoard.style.width = puzzleBoard.style.height = `${gridSize * 100}px`;
-
-      const tiles = [];
-
-      for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
-          const tile = document.createElement('div');
-          tile.classList.add('tile');
-          tile.dataset.row = row;
-          tile.dataset.col = col;
-          tile.style.backgroundPosition = `${-col * 100}px ${-row * 100}px`;
-          tile.draggable = true;
-
-          tile.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', `${row},${col}`);
-            tile.classList.add('dragging');
-          });
-
-          tile.addEventListener('dragend', () => {
-            tile.classList.remove('dragging');
-          });
-
-          tiles.push(tile);
-        }
-      }
-
-      shuffle(tiles).forEach(tile => tilePool.appendChild(tile));
-
-      for (let i = 0; i < gridSize * gridSize; i++) {
-        const slot = document.createElement('div');
-        slot.classList.add('tile-slot');
-        slot.style.border = '1px dashed #ccc';
-        slot.style.backgroundColor = '#fafafa';
-
-        slot.addEventListener('dragover', (e) => e.preventDefault());
-
-        slot.addEventListener('drop', (e) => {
-          e.preventDefault();
-          const [row, col] = e.dataTransfer.getData('text/plain').split(',');
-          const draggedTile = Array.from(tilePool.children).find(t => t.dataset.row == row && t.dataset.col == col);
-
-          if (!draggedTile) return;
-
-          if (checkCorrect(slot, row, col)) {
-            slot.appendChild(draggedTile);
-            draggedTile.style.position = 'relative';
-            draggedTile.style.width = '100%';
-            draggedTile.style.height = '100%';
-            checkWin();
-          } else {
-            draggedTile.style.transform = 'translateX(10px)';
-            setTimeout(() => draggedTile.style.transform = 'translateX(0)', 100);
-          }
-        });
-
-        puzzleBoard.appendChild(slot);
-      }
-    }
-
-    function checkCorrect(slot, row, col) {
-      const slotIndex = Array.from(slot.parentNode.children).indexOf(slot);
-      const slotRow = Math.floor(slotIndex / gridSize);
-      const slotCol = slotIndex % gridSize;
-      return (parseInt(row) === slotRow && parseInt(col) === slotCol);
-    }
-
-    function checkWin() {
-      const slots = document.querySelectorAll('.puzzle-board .tile-slot');
-      const allFilled = Array.from(slots).every(slot => slot.children.length > 0);
-      if (allFilled) {
-        clearInterval(timerInterval);
-        document.getElementById('win-message').textContent = `🎉 퍼즐 완성! 시간: ${timer}초!`;
-      }
-    }
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-  </script>
-
-</body>
-
-</html>
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
