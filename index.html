@@ -101,7 +101,7 @@
         <div class="puzzle-container" id="puzzle"></div>
         <div class="controls">
             <button id="start-button">게임 시작</button>
-            <button id="preview-button">미리보기</button>
+            <button id="preview-button">미리보기 숨기기</button>
         </div>
         <div class="moves" id="moves">이동 횟수: 0</div>
         <div class="win-message" id="win-message">축하합니다! 퍼즐을 완성했습니다!</div>
@@ -125,8 +125,8 @@
         const winMessage = document.getElementById('win-message');
         const previewImage = document.getElementById('preview-image');
 
-        // 실제 미니언 이미지 경로
-        const imageUrl = 'config/image1';
+        // 실제 미니언 이미지 경로 (확장자 포함)
+        const imageUrl = 'config/image1.jpeg';
 
         // 게임 초기화
         function initializeGame() {
