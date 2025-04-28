@@ -1,8 +1,3 @@
-// Supabase configuration
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Replace with your Supabase URL
-const SUPABASE_KEY = 'YOUR_SUPABASE_PUBLIC_KEY'; // Replace with your Supabase public key
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 let gridSize = 3;
 let originalImage = 'config/image1.jpeg';
 let tiles = [];
@@ -12,37 +7,11 @@ let moves = 0;
 let isGameStarted = false;
 let touchStartX, touchStartY; // 터치 시작 위치
 let activeTouchTile = null; // 현재 터치 중인 타일
-let currentDifficulty = '3x3'; // Default difficulty for leaderboard
 
 // 초기화 함수
 window.onload = function() {
   // 기본적으로 3x3 버튼이 활성화되도록 설정
   setGridSize(3);
-  
-  // 리더보드 초기화
-  initLeaderboard();
-  
-  // 모달 닫기 버튼 이벤트 리스너
-  document.querySelector('.close-btn').addEventListener('click', closeModal);
-  
-  // 점수 저장 버튼 이벤트 리스너
-  document.getElementById('save-score-btn').addEventListener('click', saveScore);
-  
-  // 리더보드 탭 이벤트 리스너
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      // 활성 탭 변경
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      
-      // 선택된 난이도에 대한 리더보드 로드
-      currentDifficulty = e.target.dataset.difficulty;
-      loadLeaderboard(currentDifficulty);
-    });
-  });
-  
-  // 초기 리더보드 로드
-  loadLeaderboard('3x3');
 };
 
 function setGridSize(size) {
@@ -428,29 +397,15 @@ function checkComplete() {
     clearInterval(timerInterval);
     isGameStarted = false;
     
+    // 축하 메시지를 토스트로 표시
+    showMessage(`축하합니다! (Congratulations) 걸린 시간: ${time}초, 이동 횟수: ${moves}회`, 'success', 5000); // 더 오래 표시
+    
     // 애니메이션 효과 (모든 타일에 완성 효과 추가)
     placedTiles.forEach((tile, idx) => {
       setTimeout(() => {
         tile.classList.add('complete');
       }, idx * 100);
     });
-    
-    // 점수 계산 (시간이 적을수록, 이동 횟수가 적을수록 높은 점수)
-    const baseScore = 10000;
-    const timeDeduction = time * 5;
-    const movesDeduction = moves * 10;
-    const score = Math.max(baseScore - timeDeduction - movesDeduction, 0);
-    
-    // 모달에 결과 표시
-    const completionStats = document.getElementById('completion-stats');
-    completionStats.innerHTML = `
-      <p>시간: ${time}초</p>
-      <p>이동 횟수: ${moves}회</p>
-      <p>점수: ${score}점</p>
-    `;
-    
-    // 완료 모달 표시
-    showCompletionModal();
   }
 }
 
@@ -468,57 +423,3 @@ window.addEventListener('resize', function() {
     setupPuzzle();
   }
 });
-
-// 리더보드 관련 함수
-function initLeaderboard() {
-  // 리더보드 초기화 로직
-  console.log('Initializing leaderboard');
-}
-
-// 리더보드 데이터 로드
-async function loadLeaderboard(difficulty) {
-  try {
-    // 리더보드 로딩 표시
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    leaderboardBody.innerHTML = '<div class="loading">Loading...</div>';
-    
-    // Supabase에서 상위 10개 점수 가져오기
-    const { data, error } = await supabase
-      .from('puzzle_scores')
-      .select('*')
-      .eq('difficulty', difficulty)
-      .order('score', { ascending: false })
-      .limit(10);
-    
-    if (error) throw error;
-    
-    // 리더보드 데이터 표시
-    displayLeaderboard(data);
-  } catch (error) {
-    console.error('Error loading leaderboard:', error);
-    showMessage('리더보드 로딩 실패', 'error', 3000);
-  }
-}
-
-// 리더보드 데이터 표시
-function displayLeaderboard(scores) {
-  const leaderboardBody = document.getElementById('leaderboard-body');
-  leaderboardBody.innerHTML = '';
-  
-  if (scores.length === 0) {
-    leaderboardBody.innerHTML = '<div class="no-scores">아직 기록이 없습니다</div>';
-    return;
-  }
-  
-  scores.forEach((score, index) => {
-    const row = document.createElement('div');
-    row.className = 'leaderboard-row';
-    
-    row.innerHTML = `
-      <div class="rank">${index + 1}</div>
-      <div class="name">${score.player_name}</div>
-      <div class="score">${score.score}</div>
-      <div class="time">${score.time_taken}초</div>
-    `;
-    
-    leaderboardBody.
