@@ -5,8 +5,10 @@ let timerInterval;
 let time = 0;
 let moves = 0;
 let isGameStarted = false;
-let touchStartX, touchStartY; // 터치 시작 위치
-let activeTouchTile = null; // 현재 터치 중인 타일
+let touchStartX, touchStartY; 
+let activeTouchTile = null;
+let initialTileArrangement = []; // 원래 타일 배열 저장
+let resizeTimeout;
 
 // 초기화 함수
 window.onload = function() {
@@ -16,7 +18,7 @@ window.onload = function() {
 
 function setGridSize(size) {
   // 이전에 선택된 버튼의 active 클래스 제거
-  const buttons = document.querySelectorAll('.size-btn');
+  const buttons = document.querySelectorAll('.difficulty-card');
   buttons.forEach(btn => btn.classList.remove('active'));
   
   // 현재 선택된 버튼에 active 클래스 추가
@@ -38,8 +40,8 @@ function startGame() {
   isGameStarted = true;
   
   // UI 초기화
-  document.getElementById('timer').textContent = `시간: 0초`;
-  document.getElementById('moves').textContent = `이동 횟수: 0`;
+  document.getElementById('timer').textContent = `0s`;
+  document.getElementById('moves').textContent = `0`;
   
   // 퍼즐 설정
   setupPuzzle();
@@ -51,7 +53,7 @@ function startGame() {
 function startTimer() {
   timerInterval = setInterval(() => {
     time++;
-    document.getElementById('timer').textContent = `시간: ${time}초`;
+    document.getElementById('timer').textContent = `${time}s`;
   }, 1000);
 }
 
@@ -77,6 +79,9 @@ function setupPuzzle() {
   
   // 타일 섞기
   shuffleArray(tiles);
+  
+  // 원본 타일 배열 저장 (재정렬 방지용)
+  initialTileArrangement = [...tiles];
   
   // 타일 컨테이너 스타일 설정
   tileContainer.style.width = `${containerSize}px`;
@@ -112,9 +117,9 @@ function setupPuzzle() {
     div.addEventListener('dragend', dragEnd);
     
     // 모바일 터치 이벤트 리스너 추가
-    div.addEventListener('touchstart', touchStart);
-    div.addEventListener('touchmove', touchMove);
-    div.addEventListener('touchend', touchEnd);
+    div.addEventListener('touchstart', touchStart, { passive: false });
+    div.addEventListener('touchmove', touchMove, { passive: false });
+    div.addEventListener('touchend', touchEnd, { passive: false });
     
     tileContainer.appendChild(div);
   });
@@ -147,6 +152,49 @@ function setupPuzzle() {
     // 타일이 더 많으므로 컨테이너 높이를 동적으로 조정
     const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded; // gap 4px 고려
+    tileContainer.style.height = `${adjustedHeight}px`;
+    tileContainer.style.minHeight = `${adjustedHeight}px`;
+  }
+}
+
+// 화면 크기 변경 시 레이아웃만 조정하고 타일을 재배치하지 않음
+function adjustLayout() {
+  if (!isGameStarted) return;
+  
+  const tileContainer = document.getElementById('tile-container');
+  const puzzleBoard = document.getElementById('puzzle-board');
+  
+  // 현재 viewport에 맞게 크기 조정
+  const containerSize = Math.min(300, window.innerWidth * 0.8);
+  const tileSize = Math.floor(containerSize / gridSize) - 4;
+  
+  // 컨테이너 크기 업데이트
+  tileContainer.style.width = `${containerSize}px`;
+  puzzleBoard.style.width = `${containerSize}px`;
+  
+  // 타일 크기 업데이트
+  const existingTiles = document.querySelectorAll('.tile');
+  existingTiles.forEach(tile => {
+    tile.style.width = `${tileSize}px`;
+    tile.style.height = `${tileSize}px`;
+    tile.style.backgroundSize = `${containerSize}px ${containerSize}px`;
+    
+    const x = parseInt(tile.dataset.x);
+    const y = parseInt(tile.dataset.y);
+    tile.style.backgroundPosition = `${-x * (containerSize / gridSize)}px ${-y * (containerSize / gridSize)}px`;
+  });
+  
+  // 드롭존 크기 업데이트
+  const dropzones = document.querySelectorAll('.dropzone');
+  dropzones.forEach(zone => {
+    zone.style.width = `${tileSize}px`;
+    zone.style.height = `${tileSize}px`;
+  });
+  
+  // 타일 컨테이너 높이 조정 (4x4, 5x5에서 모든 타일이 보이도록)
+  if (gridSize > 3) {
+    const rowsNeeded = Math.ceil(tiles.length / gridSize);
+    const adjustedHeight = (tileSize + 4) * rowsNeeded;
     tileContainer.style.height = `${adjustedHeight}px`;
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
@@ -212,7 +260,7 @@ function drop(e) {
   placeTile(draggedTile, tileX, tileY, dropzoneX, dropzoneY, e.target);
 }
 
-// 모바일 터치 이벤트 핸들러
+// 모바일 터치 이벤트 핸들러 (성능 최적화)
 function touchStart(e) {
   if (!e.target.classList.contains('tile')) return;
   
@@ -226,10 +274,15 @@ function touchStart(e) {
   // 현재 타일 저장
   activeTouchTile = e.target;
   activeTouchTile.classList.add('dragging');
-  activeTouchTile.style.opacity = '0.5';
   
-  // 타일을 최상위로 표시
-  activeTouchTile.style.zIndex = '100';
+  // requestAnimationFrame으로 더 부드러운 애니메이션 구현
+  requestAnimationFrame(() => {
+    activeTouchTile.style.position = 'fixed';
+    activeTouchTile.style.zIndex = '100';
+    activeTouchTile.style.opacity = '0.7';
+    activeTouchTile.style.left = `${touch.clientX - (activeTouchTile.offsetWidth / 2)}px`;
+    activeTouchTile.style.top = `${touch.clientY - (activeTouchTile.offsetHeight / 2)}px`;
+  });
 }
 
 function touchMove(e) {
@@ -239,24 +292,29 @@ function touchMove(e) {
   
   const touch = e.touches[0];
   
-  // 타일 이동
-  activeTouchTile.style.position = 'fixed';
-  activeTouchTile.style.left = `${touch.clientX - (activeTouchTile.offsetWidth / 2)}px`;
-  activeTouchTile.style.top = `${touch.clientY - (activeTouchTile.offsetHeight / 2)}px`;
-  
-  // 현재 위치에서 드롭존 확인
+  // requestAnimationFrame으로 더 부드러운 애니메이션 구현
+  requestAnimationFrame(() => {
+    activeTouchTile.style.left = `${touch.clientX - (activeTouchTile.offsetWidth / 2)}px`;
+    activeTouchTile.style.top = `${touch.clientY - (activeTouchTile.offsetHeight / 2)}px`;
+    
+    // 드롭존 하이라이트 업데이트
+    updateDropzoneHighlights(touch.clientX, touch.clientY);
+  });
+}
+
+// 드롭존 하이라이트 업데이트 함수
+function updateDropzoneHighlights(x, y) {
   const dropzones = document.querySelectorAll('.dropzone');
   dropzones.forEach(zone => {
     zone.classList.remove('highlight');
     
     const zoneRect = zone.getBoundingClientRect();
     if (
-      touch.clientX >= zoneRect.left && 
-      touch.clientX <= zoneRect.right && 
-      touch.clientY >= zoneRect.top && 
-      touch.clientY <= zoneRect.bottom
+      x >= zoneRect.left && 
+      x <= zoneRect.right && 
+      y >= zoneRect.top && 
+      y <= zoneRect.bottom
     ) {
-      // 드롭존 위에 있는 경우 하이라이트
       zone.classList.add('highlight');
     }
   });
@@ -315,7 +373,7 @@ function touchEnd(e) {
 function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   // 이동 횟수 증가
   moves++;
-  document.getElementById('moves').textContent = `이동 횟수: ${moves}`;
+  document.getElementById('moves').textContent = `${moves}`;
   
   // 올바른 위치에 놓았는지 확인
   if (tileX === dropzoneX && tileY === dropzoneY) {
@@ -417,9 +475,11 @@ function shuffleArray(array) {
   return array;
 }
 
-// 브라우저 크기 변경에 대응
+// 브라우저 크기 변경에 대응 (디바운싱 적용)
 window.addEventListener('resize', function() {
-  if (isGameStarted) {
-    setupPuzzle();
-  }
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(function() {
+    // 레이아웃만 조정하고 타일을 재배치하지 않음
+    adjustLayout();
+  }, 250); // 250ms 디바운스
 });
