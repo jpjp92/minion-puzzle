@@ -408,7 +408,7 @@ h2 {
 /* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
-    padding-bottom: 60px; /* 통계가 겹치지 않도록 하단 패딩 추가 */
+    padding-bottom: 30px; /* 통계가 겹치지 않도록 하단 패딩 추가 */
   }
   
   #start-btn {
