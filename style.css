@@ -154,8 +154,9 @@ h2 {
 
 .panel-bottom {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
   margin-top: 20px;
 }
 
