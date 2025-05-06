@@ -36,6 +36,89 @@
         </div>
       </div>
       
+      <div class="panel-bottom">
+        <button id="start-btn" onclick="startGame()">
+          <span class="btn-icon"><i class="fas fa-play"></i></span>
+          <span class="btn-text">Start Game</span>
+        </button>
+        
+        <div class="game-stats">
+          <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div id="timer">0s</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon"><i class="fas fa-arrows-alt"></i></div>
+            <div id="moves">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="game-container">
+      <div class="game-section">
+        <h2><i class="fas fa-puzzle-piece"></i> Pieces</h2>
+        <div id="tile-container" class="tile-container"></div>
+      </div>
+      
+      <div class="game-section">
+        <h2><i class="fas fa-th"></i> Board</h2>
+        <div id="puzzle-board" class="puzzle-board"></div>
+      </div>
+      
+      <div class="game-section">
+        <h2><i class="fas fa-image"></i> Preview</h2>
+        <div id="preview" class="preview">
+          <img id="preview-img" src="config/image1.jpeg" alt="미리보기">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minion Puzzle</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-header">
+      <h1><span class="logo-text">Minion</span> Puzzle <span class="emoji">🎮</span></h1>
+      <div class="game-intro">Drag & drop puzzle pieces to complete the image!</div>
+    </div>
+
+    <div class="game-panel">
+      <div class="difficulty-selector">
+        <h3>Choose Difficulty</h3>
+        <div class="difficulty-options">
+          <div id="size-3" class="difficulty-card active" onclick="setGridSize(3)">
+            <div class="card-icon"><i class="fas fa-baby"></i></div>
+            <div class="card-label">Easy</div>
+            <div class="card-detail">3×3</div>
+          </div>
+          <div id="size-4" class="difficulty-card" onclick="setGridSize(4)">
+            <div class="card-icon"><i class="fas fa-user"></i></div>
+            <div class="card-label">Medium</div>
+            <div class="card-detail">4×4</div>
+          </div>
+          <div id="size-5" class="difficulty-card" onclick="setGridSize(5)">
+            <div class="card-icon"><i class="fas fa-crown"></i></div>
+            <div class="card-label">Hard</div>
+            <div class="card-detail">5×5</div>
+          </div>
+        </div>
+      </div>
+      
       <button id="start-btn" onclick="startGame()">
         <span class="btn-icon"><i class="fas fa-play"></i></span>
         <span class="btn-text">Start Game</span>
@@ -75,3 +158,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+ -->
