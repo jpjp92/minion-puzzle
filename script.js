@@ -1,5 +1,11 @@
 let gridSize = 3;
-let originalImage = 'config/image1.jpeg';
+let availableImages = [
+  { src: 'config/image1.jpeg', name: '이미지 1' },
+  { src: 'config/image2.jpg', name: '이미지 2' },
+  { src: 'config/image3.jpg', name: '이미지 3' }
+];
+let selectedImageIndex = 0;
+let originalImage = availableImages[selectedImageIndex].src;
 let tiles = [];
 let timerInterval;
 let time = 0;
@@ -14,7 +20,116 @@ let resizeTimeout;
 window.onload = function() {
   // 기본적으로 3x3 버튼이 활성화되도록 설정
   setGridSize(3);
+  
+  // 이미지 선택 UI 생성
+  createImageSelector();
 };
+
+// 이미지 선택 UI 생성
+function createImageSelector() {
+  const selectorContainer = document.createElement('div');
+  selectorContainer.className = 'selector-container';
+  selectorContainer.style.display = 'flex';
+  selectorContainer.style.justifyContent = 'center';
+  selectorContainer.style.margin = '20px 0';
+  
+  // 이미지 선택 레이블
+  const selectorLabel = document.createElement('div');
+  selectorLabel.textContent = '이미지 선택: ';
+  selectorLabel.style.marginRight = '10px';
+  selectorLabel.style.alignSelf = 'center';
+  selectorContainer.appendChild(selectorLabel);
+  
+  // 이미지 선택 드롭다운
+  const imageSelector = document.createElement('select');
+  imageSelector.id = 'image-selector';
+  imageSelector.className = 'image-selector';
+  
+  // 이미지 옵션 추가
+  availableImages.forEach((image, index) => {
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = image.name;
+    imageSelector.appendChild(option);
+  });
+  
+  // 선택 이벤트 리스너 추가
+  imageSelector.addEventListener('change', function() {
+    selectedImageIndex = parseInt(this.value);
+    originalImage = availableImages[selectedImageIndex].src;
+    
+    // 이미지 미리보기 업데이트
+    updateImagePreview();
+    
+    // 게임이 진행 중이면 새 이미지로 재시작
+    if (isGameStarted) {
+      startGame();
+    }
+  });
+  
+  selectorContainer.appendChild(imageSelector);
+  
+  // 이미지 미리보기 컨테이너
+  const previewContainer = document.createElement('div');
+  previewContainer.id = 'image-preview-container';
+  previewContainer.style.display = 'flex';
+  previewContainer.style.justifyContent = 'center';
+  previewContainer.style.margin = '10px 0';
+  
+  // 이미지 미리보기
+  const previewImage = document.createElement('img');
+  previewImage.id = 'image-preview';
+  previewImage.src = originalImage;
+  previewImage.style.maxWidth = '200px';
+  previewImage.style.maxHeight = '200px';
+  previewImage.style.objectFit = 'contain';
+  previewImage.style.border = '2px solid #ddd';
+  previewImage.style.borderRadius = '4px';
+  
+  previewContainer.appendChild(previewImage);
+  
+  // UI에 추가 - 난이도 선택 카드 아래에 추가
+  const difficultyContainer = document.querySelector('.difficulty-container');
+  if (difficultyContainer) {
+    difficultyContainer.parentNode.insertBefore(selectorContainer, difficultyContainer.nextSibling);
+    difficultyContainer.parentNode.insertBefore(previewContainer, selectorContainer.nextSibling);
+  } else {
+    // 난이도 선택 컨테이너가 없는 경우에 대한 대비
+    const gameContainer = document.querySelector('.game-container');
+    if (gameContainer) {
+      gameContainer.prepend(selectorContainer);
+      gameContainer.insertBefore(previewContainer, selectorContainer.nextSibling);
+    } else {
+      document.body.prepend(selectorContainer);
+      document.body.insertBefore(previewContainer, selectorContainer.nextSibling);
+    }
+  }
+}
+
+// 이미지 미리보기 업데이트
+function updateImagePreview() {
+  const previewImage = document.getElementById('image-preview');
+  if (previewImage) {
+    previewImage.src = originalImage;
+  }
+}
+
+// 랜덤 이미지 선택 기능
+function selectRandomImage() {
+  selectedImageIndex = Math.floor(Math.random() * availableImages.length);
+  originalImage = availableImages[selectedImageIndex].src;
+  
+  // 드롭다운 선택 업데이트
+  const imageSelector = document.getElementById('image-selector');
+  if (imageSelector) {
+    imageSelector.value = selectedImageIndex;
+  }
+  
+  // 이미지 미리보기 업데이트
+  updateImagePreview();
+  
+  return originalImage;
+}
 
 function setGridSize(size) {
   // 이전에 선택된 버튼의 active 클래스 제거
