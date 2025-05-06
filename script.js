@@ -456,7 +456,7 @@ function checkComplete() {
     isGameStarted = false;
     
     // 축하 메시지를 토스트로 표시
-    showMessage(`축하합니다! (Congratulations), 'success', 5000); // 더 오래 표시
+    showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 5000); // 더 오래 표시
     
     // 애니메이션 효과 (모든 타일에 완성 효과 추가)
     placedTiles.forEach((tile, idx) => {
