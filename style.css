@@ -1,4 +1,115 @@
-body {
+/* 난이도 선택 부분 축소 스타일 */
+.game-panel {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px; /* 25px에서 20px로 줄임 */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* 30px에서 20px로 줄임 */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.difficulty-selector h3 {
+  color: #546e7a;
+  font-size: 18px; /* 20px에서 18px로 줄임 */
+  margin-top: 0;
+  margin-bottom: 10px; /* 15px에서 10px로 줄임 */
+}
+
+.difficulty-options {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* 20px에서 15px로 줄임 */
+  margin-bottom: 20px; /* 30px에서 20px로 줄임 */
+  flex-wrap: wrap;
+}
+
+/* 카드 대신 버튼 스타일로 변경 */
+.difficulty-card {
+  background-color: #f5f5f5;
+  border-radius: 50px; /* 더 둥근 모서리 */
+  padding: 10px 15px; /* 크기 줄임 */
+  height: auto; /* 고정 높이 제거 */
+  width: auto; /* 고정 너비 제거 */
+  display: flex;
+  flex-direction: row; /* 가로 배열로 변경 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-card:hover {
+  transform: translateY(-2px); /* -5px에서 -2px로 줄임 */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 줄임 */
+}
+
+.difficulty-card.active {
+  background-color: #1565c0;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(21, 101, 192, 0.3);
+}
+
+/* 아이콘 크기 줄임 */
+.card-icon {
+  font-size: 20px; /* 32px에서 20px로 줄임 */
+  margin-bottom: 0; /* 마진 제거 */
+  margin-right: 8px; /* 오른쪽 마진 추가 */
+}
+
+.card-label {
+  font-weight: bold;
+  margin-bottom: 0; /* 마진 제거 */
+  margin-right: 5px; /* 오른쪽 마진 추가 */
+}
+
+.card-detail {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-left: 3px; /* 왼쪽 마진 추가 */
+}
+
+/* Start Game 버튼을 위한 여백 줄임 */
+.panel-bottom {
+  position: relative;
+  width: 100%;
+  margin-top: 10px; /* 20px에서 10px로 줄임 */
+}
+
+/* 탭 메뉴 스타일 (Preview, Board, Pieces) 강화 */
+.game-tabs {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.game-tabs a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #546e7a;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.game-tabs a:hover,
+.game-tabs a.active {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+
+/* body {
   text-align: center;
   background-color: #f6f9fe;
   font-family: 'Segoe UI', 'Arial', sans-serif;
@@ -425,3 +536,4 @@ h2 {
     margin-top: 0;
   }
 }
+ */
