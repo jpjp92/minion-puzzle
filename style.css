@@ -405,20 +405,23 @@ h2 {
   }
 }
 
+
 /* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
-    padding-bottom: 30px; /* 통계가 겹치지 않도록 하단 패딩 추가 */
+    padding-bottom: 20px; /* 60px에서 20px로 줄임 */
+    margin-bottom: 10px;  /* 하단 여백 추가 */
   }
   
   #start-btn {
     width: 100%;
+    margin-bottom: 20px; /* 버튼 아래 여백 추가 */
   }
   
   .game-stats {
-    position: relative; /* 모바일에서는 절대 위치 대신 상대 위치 사용 */
+    position: relative;
     width: 100%;
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    margin-top: 20px;
+    justify-content: center; /* 모바일에서는 중앙 정렬 */
+    margin-top: 0;
   }
 }
