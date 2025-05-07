@@ -405,7 +405,6 @@ h2 {
   }
 }
 
-
 /* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
@@ -424,4 +423,32 @@ h2 {
     justify-content: center; /* 모바일에서는 중앙 정렬 */
     margin-top: 0;
   }
+}
+
+/* 이미지 선택 드롭다운 스타일 추가 */
+.image-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.image-selector label {
+  font-size: 16px;
+  color: #546e7a;
+  margin-right: 10px;
+}
+
+.image-selector select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.image-selector select:hover {
+  border-color: #1565c0;
 }
