@@ -56,21 +56,27 @@
     </div>
 
     <div class="game-container">
-      <!-- 🔁 Preview 먼저 -->
       <div class="game-section">
         <h2><i class="fas fa-image"></i> Preview</h2>
+        <div class="image-selector">
+          <label for="image-select">Select Image:</label>
+          <select id="image-select" onchange="changeImage()">
+            <option value="image1.jpeg">Image 1</option>
+            <option value="image2.jpeg">Image 2</option>
+            <option value="image3.jpg">Image 3</option>
+            <option value="image4.jpg">Image 4</option>
+          </select>
+        </div>
         <div id="preview" class="preview">
           <img id="preview-img" src="config/image1.jpeg" alt="미리보기">
         </div>
       </div>
 
-      <!-- 🔁 그다음 Board -->
       <div class="game-section">
         <h2><i class="fas fa-th"></i> Board</h2>
         <div id="puzzle-board" class="puzzle-board"></div>
       </div>
 
-      <!-- 🔁 마지막 Pieces -->
       <div class="game-section">
         <h2><i class="fas fa-puzzle-piece"></i> Pieces</h2>
         <div id="tile-container" class="tile-container"></div>
