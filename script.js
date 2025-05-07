@@ -1,51 +1,29 @@
-let gridSize = 3;
-let selectedImage = 'config/image1.jpeg';
+// script.js
 
-function setGridSize(size) {
-  gridSize = size;
-  document.querySelectorAll('.difficulty-card').forEach(card => card.classList.remove('active'));
-  document.getElementById(`size-${size}`).classList.add('active');
-}
+const difficulties = document.querySelectorAll('.difficulty-card');
+const startBtn = document.getElementById('start-btn');
+const imageSelector = document.getElementById('image-select');
+const previewImage = document.getElementById('preview-img');
+let selectedDifficulty = 'easy';
+let selectedImage = 'image1';
 
-function changeImage() {
-  const select = document.getElementById('image-select');
-  selectedImage = `config/${select.value}`;
-  document.getElementById('preview-img').src = selectedImage;
+// Handle difficulty selection
+difficulties.forEach(card => {
+  card.addEventListener('click', () => {
+    difficulties.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedDifficulty = card.dataset.difficulty;
+  });
+});
 
-  if (gridSize > 0) {
-    startGame(); // 선택 시 바로 퍼즐 재생성
-  }
-}
+// Handle image selection
+imageSelector.addEventListener('change', (e) => {
+  selectedImage = e.target.value;
+  previewImage.src = `config/${selectedImage}.jpg`;
+});
 
-function startGame() {
-  document.getElementById('moves').textContent = '0';
-  document.getElementById('timer').textContent = '0s';
-
-  createPuzzleBoard(gridSize, selectedImage);
-}
-
-function createPuzzleBoard(size, imageSrc) {
-  const tileContainer = document.getElementById('tile-container');
-  const puzzleBoard = document.getElementById('puzzle-board');
-  tileContainer.innerHTML = '';
-  puzzleBoard.innerHTML = '';
-
-  const totalTiles = size * size;
-  const indices = Array.from({ length: totalTiles }, (_, i) => i).sort(() => Math.random() - 0.5);
-
-  tileContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  puzzleBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-
-  for (let i = 0; i < totalTiles; i++) {
-    const tile = document.createElement('div');
-    tile.classList.add('tile');
-    const x = indices[i] % size;
-    const y = Math.floor(indices[i] / size);
-    tile.style.backgroundImage = `url('${imageSrc}')`;
-    tile.style.backgroundSize = `${size * 100}% ${size * 100}%`;
-    tile.style.backgroundPosition = `-${x * 100}% -${y * 100}%`;
-    tile.style.aspectRatio = '1 / 1';
-    tile.draggable = true;
-    tileContainer.appendChild(tile);
-  }
-}
+// Handle game start
+startBtn.addEventListener('click', () => {
+  console.log(`Start game with difficulty: ${selectedDifficulty}, image: ${selectedImage}`);
+  // Add game initialization logic here
+});
