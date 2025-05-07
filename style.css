@@ -75,13 +75,20 @@ h2 {
   margin-bottom: 15px;
 }
 
-/* 난이도 카드의 크기와 패딩을 줄임 */
+.difficulty-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
 .difficulty-card {
   background-color: #f5f5f5;
   border-radius: 12px;
-  padding: 15px; /* 기존 20px에서 15px로 축소 */
-  width: 100px;  /* 기존 120px에서 100px로 축소 */
-  height: 100px; /* 기존 120px에서 100px로 축소 */
+  padding: 20px;
+  width: 120px;
+  height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,9 +127,8 @@ h2 {
   pointer-events: none;
 }
 
-/* 아이콘과 텍스트의 크기를 줄여 비율을 맞춤 */
 .card-icon {
-  font-size: 24px; /* 기존 32px에서 24px로 축소 */
+  font-size: 32px;
   margin-bottom: 10px;
 }
 
@@ -139,21 +145,11 @@ h2 {
 .card-label {
   font-weight: bold;
   margin-bottom: 5px;
-  font-size: 14px; /* 텍스트 크기 줄임 */
 }
 
 .card-detail {
-  font-size: 12px; /* 기존 14px에서 12px로 축소 */
+  font-size: 14px;
   opacity: 0.8;
-}
-
-/* 카드 간의 간격을 줄임 */
-.difficulty-options {
-  display: flex;
-  justify-content: center;
-  gap: 15px; /* 기존 20px에서 15px로 축소 */
-  margin-bottom: 30px;
-  flex-wrap: wrap;
 }
 
 /* 여기서부터 수정된 부분 */
@@ -395,21 +391,9 @@ h2 {
   }
 
   .difficulty-card {
-    padding: 10px;
-    width: 80px;
-    height: 80px;
-  }
-
-  .card-icon {
-    font-size: 20px;
-  }
-
-  .card-label {
-    font-size: 12px;
-  }
-
-  .card-detail {
-    font-size: 10px;
+    padding: 15px;
+    width: 90px;
+    height: 90px;
   }
 
   .toast-message {
@@ -468,3 +452,459 @@ h2 {
 .image-selector select:hover {
   border-color: #1565c0;
 }
+
+/* body {
+  text-align: center;
+  background-color: #f6f9fe;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+  background-image: linear-gradient(135deg, #f6f9fe 0%, #e3f2fd 100%);
+  min-height: 100vh;
+}
+
+.game-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-header {
+  margin-bottom: 30px;
+}
+
+h1 {
+  margin-top: 20px;
+  color: #1565c0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 36px;
+  letter-spacing: 1px;
+}
+
+.logo-text {
+  color: #ffa000;
+  font-weight: bold;
+}
+
+.emoji {
+  display: inline-block;
+  animation: bounce 1.5s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.game-intro {
+  color: #546e7a;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #1565c0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.game-panel {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.difficulty-selector h3 {
+  color: #546e7a;
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.difficulty-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.difficulty-card {
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.difficulty-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-card.active {
+  background-color: #1565c0;
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(21, 101, 192, 0.3);
+}
+
+.difficulty-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  transform: rotate(-45deg);
+  pointer-events: none;
+}
+
+.card-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.active .card-icon {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.card-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.card-detail {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 여기서부터 수정된 부분 */
+.panel-bottom {
+  position: relative;  /* 상대적 위치 설정 */
+  width: 100%;         /* 전체 너비 활용 */
+  margin-top: 20px;
+}
+
+#start-btn {
+  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  margin: 0 auto;
+  box-shadow: 0 8px 16px rgba(46, 125, 50, 0.3);
+}
+
+#start-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(46, 125, 50, 0.4);
+}
+
+#start-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 10px rgba(46, 125, 50, 0.4);
+}
+
+.game-stats {
+  position: absolute;  /* 절대 위치 설정 */
+  bottom: 0;           /* 하단에 배치 */
+  right: 0;            /* 오른쪽에 배치 */
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;    /* 버튼과의 간격 */
+}
+/* 수정된 부분 끝 */
+
+.btn-icon {
+  font-size: 20px;
+}
+
+.stat-item {
+  background-color: white;
+  padding: 8px 15px;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.stat-icon {
+  color: #1565c0;
+  font-size: 20px;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.game-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tile-container, .puzzle-board, .preview {
+  border: none;
+  background-color: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.tile-container {
+  min-height: 300px;
+  min-width: 300px;
+  display: grid;
+  gap: 6px;
+}
+
+.puzzle-board {
+  min-height: 300px;
+  min-width: 300px;
+  display: grid !important;
+  gap: 6px;
+}
+
+.preview {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview::after {
+  content: 'Target Image';
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: rgba(21, 101, 192, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.tile {
+  background-repeat: no-repeat;
+  cursor: grab;
+  transition: none;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  touch-action: manipulation;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tile.dragging {
+  opacity: 0.7;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
+.tile.wrong {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.tile.complete {
+  animation: glow 1s;
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+  100% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+}
+
+.puzzle-board .dropzone {
+  background-color: rgba(224, 242, 254, 0.6);
+  border: 2px dashed #90caf9;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.puzzle-board .dropzone:hover {
+  background-color: rgba(224, 242, 254, 0.8);
+}
+
+.puzzle-board .dropzone.highlight {
+  background-color: rgba(187, 222, 251, 0.8);
+  border: 2px dashed #1976d2;
+  transform: scale(1.03);
+}
+
+.toast-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+  max-width: 300px;
+}
+
+.toast-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-message.success {
+  background: linear-gradient(45deg, #43a047, #2e7d32);
+}
+
+.toast-message.error {
+  background: linear-gradient(45deg, #e53935, #c62828);
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 900px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tile-container, .puzzle-board, .preview {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .difficulty-options {
+    gap: 10px;
+  }
+
+  .difficulty-card {
+    padding: 15px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .toast-message {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    text-align: center;
+  }
+}
+
+/* 모바일 반응형 스타일 수정 */
+@media (max-width: 600px) {
+  .panel-bottom {
+    padding-bottom: 20px; /* 60px에서 20px로 줄임 */
+    margin-bottom: 10px;  /* 하단 여백 추가 */
+  }
+  
+  #start-btn {
+    width: 100%;
+    margin-bottom: 20px; /* 버튼 아래 여백 추가 */
+  }
+  
+  .game-stats {
+    position: relative;
+    width: 100%;
+    justify-content: center; /* 모바일에서는 중앙 정렬 */
+    margin-top: 0;
+  }
+}
+
+/* 이미지 선택 드롭다운 스타일 추가 */
+.image-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.image-selector label {
+  font-size: 16px;
+  color: #546e7a;
+  margin-right: 10px;
+}
+
+.image-selector select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.image-selector select:hover {
+  border-color: #1565c0;
+}
+ */
