@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
   <div class="game-wrapper">
     <div class="game-header">
@@ -36,12 +38,18 @@
         </div>
       </div>
 
+      <div class="image-selector-container">
+        <h3>Choose Image</h3>
+        <select id="image-selector">
+          </select>
+      </div>
+
       <div class="panel-bottom">
         <button id="start-btn" onclick="startGame()">
           <span class="btn-icon"><i class="fas fa-play"></i></span>
           <span class="btn-text">Start Game</span>
         </button>
-        
+
         <div class="game-stats">
           <div class="stat-item">
             <div class="stat-icon"><i class="fas fa-clock"></i></div>
@@ -56,7 +64,6 @@
     </div>
 
     <div class="game-container">
-      <!-- 🔁 Preview 먼저 -->
       <div class="game-section">
         <h2><i class="fas fa-image"></i> Preview</h2>
         <div id="preview" class="preview">
@@ -64,13 +71,11 @@
         </div>
       </div>
 
-      <!-- 🔁 그다음 Board -->
       <div class="game-section">
         <h2><i class="fas fa-th"></i> Board</h2>
         <div id="puzzle-board" class="puzzle-board"></div>
       </div>
 
-      <!-- 🔁 마지막 Pieces -->
       <div class="game-section">
         <h2><i class="fas fa-puzzle-piece"></i> Pieces</h2>
         <div id="tile-container" class="tile-container"></div>
@@ -80,4 +85,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
