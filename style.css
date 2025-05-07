@@ -1,68 +1,125 @@
-/* 기본 스타일 유지 */
+/* style.css */
+
 body {
-  font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 0;
-  background: #f0f0f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f4fb;
+  color: #333;
 }
 
 .game-wrapper {
-  max-width: 1000px;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-  background: white;
-  border-radius: 8px;
 }
 
-.game-header h1 {
+.game-header {
   text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo-text {
+  color: #f9b233;
+  font-weight: bold;
+}
+
+.emoji {
+  font-size: 1.5em;
+}
+
+.game-intro {
+  font-size: 1.1em;
+  color: #555;
+}
+
+.game-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.difficulty-selector h3 {
+  margin-bottom: 10px;
 }
 
 .difficulty-options {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .difficulty-card {
-  cursor: pointer;
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
+  flex: 1;
   text-align: center;
-  width: 80px;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #eee;
+  transition: 0.3s;
 }
 
-.difficulty-card.active {
-  border-color: #007bff;
-  background: #e0f0ff;
+.difficulty-card.active,
+.difficulty-card:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.card-icon {
+  font-size: 1.5em;
 }
 
 .panel-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
+}
+
+#start-btn {
+  padding: 10px 20px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.game-stats {
+  display: flex;
+  gap: 20px;
+  font-weight: bold;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.game-section {
+  flex: 1;
+  min-width: 300px;
 }
 
 .preview img {
   width: 100%;
-  max-width: 300px;
-  border-radius: 10px;
-}
-
-.puzzle-board,
-.tile-container {
-  display: grid;
-  gap: 2px;
-  margin-top: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .image-selector {
-  margin-bottom: 10px;
-}
-
-.image-selector select {
-  padding: 5px;
-  font-size: 14px;
-  border-radius: 5px;
+  margin: 10px 0;
 }
