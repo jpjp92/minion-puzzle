@@ -37,13 +37,8 @@ h1 {
 }
 
 @keyframes bounce {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(-10px);
-  }
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
 }
 
 .game-intro {
@@ -142,17 +137,9 @@ h2 {
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .card-label {
@@ -167,10 +154,8 @@ h2 {
 
 /* 여기서부터 수정된 부분 */
 .panel-bottom {
-  position: relative;
-  /* 상대적 위치 설정 */
-  width: 100%;
-  /* 전체 너비 활용 */
+  position: relative;  /* 상대적 위치 설정 */
+  width: 100%;         /* 전체 너비 활용 */
   margin-top: 20px;
 }
 
@@ -204,18 +189,13 @@ h2 {
 }
 
 .game-stats {
-  position: absolute;
-  /* 절대 위치 설정 */
-  bottom: 0;
-  /* 하단에 배치 */
-  right: 0;
-  /* 오른쪽에 배치 */
+  position: absolute;  /* 절대 위치 설정 */
+  bottom: 0;           /* 하단에 배치 */
+  right: 0;            /* 오른쪽에 배치 */
   display: flex;
   gap: 15px;
-  margin-top: 15px;
-  /* 버튼과의 간격 */
+  margin-top: 15px;    /* 버튼과의 간격 */
 }
-
 /* 수정된 부분 끝 */
 
 .btn-icon {
@@ -254,9 +234,7 @@ h2 {
   align-items: center;
 }
 
-.tile-container,
-.puzzle-board,
-.preview {
+.tile-container, .puzzle-board, .preview {
   border: none;
   background-color: white;
   padding: 15px;
@@ -334,20 +312,9 @@ h2 {
 }
 
 @keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20%,
-  60% {
-    transform: translateX(-8px);
-  }
-
-  40%,
-  80% {
-    transform: translateX(8px);
-  }
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
 }
 
 .tile.complete {
@@ -355,17 +322,9 @@ h2 {
 }
 
 @keyframes glow {
-  0% {
-    box-shadow: 0 0 0 rgba(255, 215, 0, 0);
-  }
-
-  50% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-  }
-
-  100% {
-    box-shadow: 0 0 0 rgba(255, 215, 0, 0);
-  }
+  0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+  100% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
 }
 
 .puzzle-board .dropzone {
@@ -412,3 +371,57 @@ h2 {
 }
 
 .toast-message.error {
+  background: linear-gradient(45deg, #e53935, #c62828);
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 900px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tile-container, .puzzle-board, .preview {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .difficulty-options {
+    gap: 10px;
+  }
+
+  .difficulty-card {
+    padding: 15px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .toast-message {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    text-align: center;
+  }
+}
+
+
+/* 모바일 반응형 스타일 수정 */
+@media (max-width: 600px) {
+  .panel-bottom {
+    padding-bottom: 20px; /* 60px에서 20px로 줄임 */
+    margin-bottom: 10px;  /* 하단 여백 추가 */
+  }
+  
+  #start-btn {
+    width: 100%;
+    margin-bottom: 20px; /* 버튼 아래 여백 추가 */
+  }
+  
+  .game-stats {
+    position: relative;
+    width: 100%;
+    justify-content: center; /* 모바일에서는 중앙 정렬 */
+    margin-top: 0;
+  }
+}
