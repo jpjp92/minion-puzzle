@@ -36,24 +36,17 @@
         </div>
       </div>
 
-      <!-- 닉네임 입력 -->
-      <div class="nickname-input">
-        <label for="nickname">Enter your nickname:</label>
-        <input type="text" id="nickname" placeholder="Your nickname" maxlength="15">
-      </div>
-
-      <!-- 이미지 선택 -->
       <div class="image-selector">
         <label for="image-select">Choose Image:</label>
         <select id="image-select">
           <option value="config/image1.jpg">🏐 Volleyball</option>
           <option value="config/image2.jpg">⚽ Football</option>
           <option value="config/image3.jpg">🏀 Basketball</option>
-          <option value="config/image4.jpg">♟️ Chess</option>
-          <option value="config/image5.jpg">🤺 Fencing</option>
+          <option value="config/image4.jpg">♟ Chess</option>
+          <option value="config/image5.jpg">🧺 Fencing</option>
           <option value="config/image6.jpg">🎾 Tennis</option>
           <option value="config/image7.jpg">🏃 Running</option>
-          <option value="config/image8.jpg">🏹 Archery</option>
+          <option value="config/image8.jpg">🌹 Archery</option>
           <option value="config/image9.jpg">🚴 Cycling</option>
         </select>
       </div>
@@ -63,7 +56,7 @@
           <span class="btn-icon"><i class="fas fa-play"></i></span>
           <span class="btn-text">Start Game</span>
         </button>
-        
+
         <div class="game-stats">
           <div class="stat-item">
             <div class="stat-icon"><i class="fas fa-clock"></i></div>
@@ -100,6 +93,16 @@
     <div id="leaderboard" class="leaderboard hidden">
       <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
       <ul id="leaderboard-list"></ul>
+    </div>
+  </div>
+
+  <!-- 닉네임 메시지 목록 포함 모니터 -->
+  <div id="nickname-modal" class="nickname-modal-overlay">
+    <div class="nickname-modal">
+      <h2>Welcome!</h2>
+      <p>Please enter your nickname to start playing.</p>
+      <input type="text" id="modal-nickname-input" placeholder="Your nickname" maxlength="15">
+      <button onclick="confirmNickname()">Start</button>
     </div>
   </div>
 
