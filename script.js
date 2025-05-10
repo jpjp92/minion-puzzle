@@ -384,23 +384,31 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!storedNickname) {
     document.getElementById('nickname-modal').style.display = 'flex';
   }
+
+  // 리더보드 버튼 클릭 이벤트
+  const btn = document.createElement('button');
+  btn.textContent = '🏆 리더보드';
+  btn.className = 'leaderboard-btn';
+  btn.onclick = () => showLeaderboardModal();
+  document.body.appendChild(btn);
 });
 
-// 기존 코드와 동일하게 유지, 예시:
+// 게임 완료 후 처리
 function checkComplete() {
   const placedTiles = document.querySelectorAll('.puzzle-board .tile');
   if (placedTiles.length === gridSize * gridSize) {
     clearInterval(timerInterval);
     isGameStarted = false;
     const nickname = localStorage.getItem('nickname') || 'Anonymous';
-    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 5000);
+    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 3000);
 
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
     leaderboard.push({ name: nickname, time, moves });
     leaderboard.sort((a, b) => a.time - b.time);
     leaderboard.splice(10);
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    renderLeaderboard();
+
+    showLeaderboardModal();
 
     placedTiles.forEach((tile, idx) => {
       setTimeout(() => tile.classList.add('complete'), idx * 100);
@@ -408,16 +416,57 @@ function checkComplete() {
   }
 }
 
-function renderLeaderboard() {
-  const board = document.getElementById('leaderboard');
-  const list = document.getElementById('leaderboard-list');
+// 모달로 리더보드 표시
+function showLeaderboardModal() {
+  const existing = document.getElementById('leaderboard-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'leaderboard-modal';
+  modal.className = 'leaderboard-modal-overlay';
+
+  modal.innerHTML = `
+    <div class="leaderboard-modal">
+      <h2>🏆 리더보드</h2>
+      <button class="close-btn" onclick="document.getElementById('leaderboard-modal').remove()">&times;</button>
+      <table>
+        <thead>
+          <tr><th>순위</th><th>플레이어</th><th>소용시간</th><th>이동</th></tr>
+        </thead>
+        <tbody id="leaderboard-modal-list"></tbody>
+      </table>
+    </div>`;
+
+  document.body.appendChild(modal);
+  renderLeaderboardModal();
+}
+
+function renderLeaderboardModal() {
+  const list = document.getElementById('leaderboard-modal-list');
   list.innerHTML = '';
   const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
   leaderboard.forEach((entry, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<span>${index + 1}. ${entry.name}</span><span>${entry.time}s / ${entry.moves} moves</span>`;
-    list.appendChild(li);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${entry.name}</td>
+      <td>${entry.time}s</td>
+      <td>${entry.moves}</td>`;
+    list.appendChild(tr);
   });
-  board.classList.remove('hidden');
 }
 
+function showMessage(text, type, duration = 3000) {
+  const existingMessage = document.getElementById('message');
+  if (existingMessage) existingMessage.remove();
+  const toast = document.createElement('div');
+  toast.id = 'message';
+  toast.className = `toast-message ${type}`;
+  toast.textContent = text;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
