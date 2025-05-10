@@ -971,6 +971,9 @@ h2 {
 /* 기존 스타일 생략 (기존 style.css 유지) */
 
 /* 닉네임 모달 스타일 */
+/* 기존 스타일 생략 (기존 style.css 유지) */
+
+/* 닉네임 모달 스타일 */
 .nickname-modal-overlay {
   position: fixed;
   top: 0;
@@ -1050,29 +1053,58 @@ h2 {
   max-width: 500px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   position: relative;
+  animation: fadeIn 0.2s ease;
 }
 
 .leaderboard-modal h2 {
   text-align: center;
-  color: #333;
+  color: #3f51b5;
   margin-bottom: 20px;
+  font-weight: 700;
 }
 
 .leaderboard-modal table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.leaderboard-modal th, .leaderboard-modal td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .leaderboard-modal th {
-  background-color: #f7f9fc;
+  background-color: #3f51b5;
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.leaderboard-modal td {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  background-color: #fafafa;
+}
+
+.leaderboard-modal tr:nth-child(even) td {
+  background-color: #f3f3f3;
+}
+
+.gold-row td {
+  background-color: #fff8e1 !important;
   font-weight: bold;
+  color: #e6b800;
+}
+
+.silver-row td {
+  background-color: #f0f0f0 !important;
+  font-weight: bold;
+  color: #b0bec5;
+}
+
+.bronze-row td {
+  background-color: #fbe9e7 !important;
+  font-weight: bold;
+  color: #d84315;
 }
 
 .leaderboard-modal .close-btn {
@@ -1106,6 +1138,7 @@ h2 {
 .leaderboard-btn:hover {
   background-color: #303f9f;
 }
+
 
 
  */
