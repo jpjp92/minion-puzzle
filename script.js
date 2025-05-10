@@ -13,7 +13,9 @@ let resizeTimeout;
 // 초기화 함수
 window.onload = function() {
   setGridSize(3);
-  document.getElementById('image-select').addEventListener('change', function () {
+  
+  // 이미지 선택 이벤트 리스너 추가
+  document.getElementById('image-select').addEventListener('change', function() {
     originalImage = this.value;
     document.getElementById('preview-img').src = originalImage;
     if (isGameStarted) {
@@ -64,7 +66,7 @@ function setupPuzzle() {
       tiles.push({ x, y });
     }
   }
-
+  
   shuffleArray(tiles);
   initialTileArrangement = [...tiles];
   
@@ -81,7 +83,7 @@ function setupPuzzle() {
   puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gap = '4px';
-
+  
   tiles.forEach(tile => {
     const div = document.createElement('div');
     div.className = 'tile';
@@ -99,10 +101,10 @@ function setupPuzzle() {
     div.addEventListener('touchstart', touchStart, { passive: false });
     div.addEventListener('touchmove', touchMove, { passive: false });
     div.addEventListener('touchend', touchEnd, { passive: false });
-
+    
     tileContainer.appendChild(div);
   });
-
+  
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const dropzone = document.createElement('div');
@@ -119,7 +121,7 @@ function setupPuzzle() {
       puzzleBoard.appendChild(dropzone);
     }
   }
-
+  
   if (gridSize > 3) {
     const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded;
@@ -128,6 +130,7 @@ function setupPuzzle() {
   }
 }
 
+// 나머지 함수들 (dragStart, dragEnd 등)은 그대로 유지
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -141,7 +144,9 @@ function dragEnd(e) {
   e.target.style.opacity = '1';
 }
 
-function dragOver(e) { e.preventDefault(); }
+function dragOver(e) {
+  e.preventDefault();
+}
 
 function dragEnter(e) {
   e.preventDefault();
@@ -220,10 +225,7 @@ function touchEnd(e) {
   dropzones.forEach(zone => {
     zone.classList.remove('highlight');
     const zoneRect = zone.getBoundingClientRect();
-    if (
-      touch.clientX >= zoneRect.left && touch.clientX <= zoneRect.right &&
-      touch.clientY >= zoneRect.top && touch.clientY <= zoneRect.bottom
-    ) {
+    if (touch.clientX >= zoneRect.left && touch.clientX <= zoneRect.right && touch.clientY >= zoneRect.top && touch.clientY <= zoneRect.bottom) {
       const dropzoneX = parseInt(zone.dataset.x);
       const dropzoneY = parseInt(zone.dataset.y);
       placeTile(activeTouchTile, tileX, tileY, dropzoneX, dropzoneY, zone);
@@ -271,53 +273,39 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   }
 }
 
-function checkComplete() {
-  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
-  if (placedTiles.length === gridSize * gridSize) {
-    clearInterval(timerInterval);
-    isGameStarted = false;
-    const nickname = document.getElementById('nickname').value || 'Anonymous';
-    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 5000);
-
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-    leaderboard.push({ name: nickname, time, moves });
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    renderLeaderboard();
-
-    placedTiles.forEach((tile, idx) => {
-      setTimeout(() => tile.classList.add('complete'), idx * 100);
-    });
-  }
-}
-
-function renderLeaderboard() {
-  const board = document.getElementById('leaderboard');
-  const list = document.getElementById('leaderboard-list');
-  list.innerHTML = '';
-  const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-  leaderboard.forEach((entry, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<span>${index + 1}. ${entry.name}</span><span>${entry.time}s / ${entry.moves} moves</span>`;
-    list.appendChild(li);
-  });
-  board.classList.remove('hidden');
-}
-
 function showMessage(text, type, duration = 3000) {
   const existingMessage = document.getElementById('message');
-  if (existingMessage) existingMessage.remove();
+  if (existingMessage) {
+    existingMessage.remove();
+  }
   const toast = document.createElement('div');
   toast.id = 'message';
   toast.className = `toast-message ${type}`;
   toast.textContent = text;
   document.body.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 10);
   setTimeout(() => {
     toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
   }, duration);
+}
+
+function checkComplete() {
+  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
+  if (placedTiles.length === gridSize * gridSize) {
+    clearInterval(timerInterval);
+    isGameStarted = false;
+    showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 5000);
+    placedTiles.forEach((tile, idx) => {
+      setTimeout(() => {
+        tile.classList.add('complete');
+      }, idx * 100);
+    });
+  }
 }
 
 function shuffleArray(array) {
@@ -328,9 +316,9 @@ function shuffleArray(array) {
   return array;
 }
 
-window.addEventListener('resize', function () {
+window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(function () {
+  resizeTimeout = setTimeout(function() {
     adjustLayout();
   }, 250);
 });
@@ -363,153 +351,4 @@ function adjustLayout() {
     tileContainer.style.height = `${adjustedHeight}px`;
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
-}
-
-
-// 모달에서 닉네임 입력 후 저장
-function confirmNickname() {
-  const input = document.getElementById('modal-nickname-input');
-  const nickname = input.value.trim();
-  if (nickname.length === 0) {
-    input.focus();
-    return;
-  }
-  localStorage.setItem('nickname', nickname);
-  document.getElementById('nickname-modal').style.display = 'none';
-}
-
-// 페이지 진입 시 닉네임 확인
-window.addEventListener('DOMContentLoaded', () => {
-  const storedNickname = localStorage.getItem('nickname');
-  if (!storedNickname) {
-    document.getElementById('nickname-modal').style.display = 'flex';
-  }
-
-  // 리더보드 버튼 클릭 이벤트
-  const btn = document.createElement('button');
-  btn.textContent = '🏆 리더보드';
-  btn.className = 'leaderboard-btn';
-  btn.onclick = () => showLeaderboardModal();
-  document.body.appendChild(btn);
-});
-
-// 게임 완료 후 처리
-function checkComplete() {
-  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
-  if (placedTiles.length === gridSize * gridSize) {
-    clearInterval(timerInterval);
-    isGameStarted = false;
-    const nickname = localStorage.getItem('nickname') || 'Anonymous';
-    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 3000);
-
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-    leaderboard.push({ name: nickname, time, moves });
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-
-    showLeaderboardModal();
-
-    placedTiles.forEach((tile, idx) => {
-      setTimeout(() => tile.classList.add('complete'), idx * 100);
-    });
-  }
-}
-
-// 모달에서 닉네임 입력 후 저장
-function confirmNickname() {
-  const input = document.getElementById('modal-nickname-input');
-  const nickname = input.value.trim();
-  if (nickname.length === 0) {
-    input.focus();
-    return;
-  }
-  localStorage.setItem('nickname', nickname);
-  document.getElementById('nickname-modal').style.display = 'none';
-}
-
-// 페이지 진입 시 닉네임 확인
-window.addEventListener('DOMContentLoaded', () => {
-  const storedNickname = localStorage.getItem('nickname');
-  if (!storedNickname) {
-    document.getElementById('nickname-modal').style.display = 'flex';
-  }
-});
-
-function checkComplete() {
-  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
-  if (placedTiles.length === gridSize * gridSize) {
-    clearInterval(timerInterval);
-    isGameStarted = false;
-    const nickname = localStorage.getItem('nickname') || 'Anonymous';
-    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 3000);
-
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-    leaderboard.push({ name: nickname, time, moves });
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-
-    renderInlineLeaderboard();
-
-    placedTiles.forEach((tile, idx) => {
-      setTimeout(() => tile.classList.add('complete'), idx * 100);
-    });
-  }
-}
-
-function toggleInlineLeaderboard() {
-  const container = document.getElementById('inline-leaderboard');
-  container.classList.toggle('hidden');
-  if (!container.classList.contains('loaded')) {
-    renderInlineLeaderboard();
-    container.classList.add('loaded');
-  }
-}
-
-function renderInlineLeaderboard() {
-  const tbody = document.getElementById('inline-leaderboard-body');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-  leaderboard.forEach((entry, index) => {
-    const tr = document.createElement('tr');
-    const rank = index + 1;
-    let rankDisplay = rank;
-    let rowClass = '';
-
-    if (rank === 1) {
-      rankDisplay = '🥇'; // 🥇
-      rowClass = 'gold-row';
-    } else if (rank === 2) {
-      rankDisplay = '🥈'; // 🥈
-      rowClass = 'silver-row';
-    } else if (rank === 3) {
-      rankDisplay = '🥉'; // 🥉
-      rowClass = 'bronze-row';
-    }
-
-    tr.className = rowClass;
-    tr.innerHTML = `
-      <td>${rankDisplay}</td>
-      <td>${entry.name}</td>
-      <td>${entry.time}s</td>
-      <td>${entry.moves}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function showMessage(text, type, duration = 3000) {
-  const existingMessage = document.getElementById('message');
-  if (existingMessage) existingMessage.remove();
-  const toast = document.createElement('div');
-  toast.id = 'message';
-  toast.className = `toast-message ${type}`;
-  toast.textContent = text;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
 }
