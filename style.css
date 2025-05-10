@@ -968,6 +968,64 @@ h2 {
 .hidden {
   display: none;
 }
+/* 닉네임 모달 스타일 */
+.nickname-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.nickname-modal {
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.nickname-modal h2 {
+  margin-bottom: 10px;
+  color: #1565c0;
+}
+
+.nickname-modal input {
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+  margin: 15px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.nickname-modal button {
+  padding: 10px 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nickname-modal button:hover {
+  background-color: #1b5e20;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
 
 
  */
