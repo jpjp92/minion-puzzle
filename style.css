@@ -971,9 +971,6 @@ h2 {
 /* 기존 스타일 생략 (기존 style.css 유지) */
 
 /* 닉네임 모달 스타일 */
-/* 기존 스타일 생략 (기존 style.css 유지) */
-
-/* 닉네임 모달 스타일 */
 .nickname-modal-overlay {
   position: fixed;
   top: 0;
@@ -1032,61 +1029,59 @@ h2 {
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* 리더보드 모달 스타일 */
-.leaderboard-modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3000;
-}
-
-.leaderboard-modal {
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  position: relative;
-  animation: fadeIn 0.2s ease;
-}
-
-.leaderboard-modal h2 {
+/* 인라인 리더보드 (게임 패널 내부에 배치) */
+.leaderboard-panel {
+  margin-top: 20px;
   text-align: center;
-  color: #3f51b5;
-  margin-bottom: 20px;
-  font-weight: 700;
 }
 
-.leaderboard-modal table {
-  width: 100%;
-  border-collapse: collapse;
+.leaderboard-toggle {
+  background: #3f51b5;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.leaderboard-toggle:hover {
+  background: #303f9f;
+}
+
+.inline-leaderboard {
+  margin-top: 15px;
   border-radius: 10px;
   overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-.leaderboard-modal th {
+.inline-leaderboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inline-leaderboard th {
   background-color: #3f51b5;
-  color: white;
-  padding: 12px;
-  font-size: 14px;
+  color: #fff;
+  padding: 10px;
+  font-size: 13px;
 }
 
-.leaderboard-modal td {
-  padding: 12px;
+.inline-leaderboard td {
+  padding: 10px;
+  font-size: 13px;
   text-align: center;
-  font-size: 14px;
-  color: #333;
-  background-color: #fafafa;
+  border-bottom: 1px solid #eee;
 }
 
-.leaderboard-modal tr:nth-child(even) td {
-  background-color: #f3f3f3;
+.inline-leaderboard tr:nth-child(odd) td {
+  background-color: #f9f9f9;
 }
 
 .gold-row td {
@@ -1107,38 +1102,7 @@ h2 {
   color: #d84315;
 }
 
-.leaderboard-modal .close-btn {
-  position: absolute;
-  top: 10px; right: 15px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #999;
+.hidden {
+  display: none;
 }
-
-.leaderboard-modal .close-btn:hover {
-  color: #000;
-}
-
-.leaderboard-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #3f51b5;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  font-size: 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-.leaderboard-btn:hover {
-  background-color: #303f9f;
-}
-
-
-
  */
