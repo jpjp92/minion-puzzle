@@ -364,3 +364,60 @@ function adjustLayout() {
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
+
+
+// 모달에서 닉네임 입력 후 저장
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim();
+  if (nickname.length === 0) {
+    input.focus();
+    return;
+  }
+  localStorage.setItem('nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
+}
+
+// 페이지 진입 시 닉네임 확인
+window.addEventListener('DOMContentLoaded', () => {
+  const storedNickname = localStorage.getItem('nickname');
+  if (!storedNickname) {
+    document.getElementById('nickname-modal').style.display = 'flex';
+  }
+});
+
+// 기존 코드와 동일하게 유지, 예시:
+function checkComplete() {
+  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
+  if (placedTiles.length === gridSize * gridSize) {
+    clearInterval(timerInterval);
+    isGameStarted = false;
+    const nickname = localStorage.getItem('nickname') || 'Anonymous';
+    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 5000);
+
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+    leaderboard.push({ name: nickname, time, moves });
+    leaderboard.sort((a, b) => a.time - b.time);
+    leaderboard.splice(10);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    renderLeaderboard();
+
+    placedTiles.forEach((tile, idx) => {
+      setTimeout(() => tile.classList.add('complete'), idx * 100);
+    });
+  }
+}
+
+function renderLeaderboard() {
+  const board = document.getElementById('leaderboard');
+  const list = document.getElementById('leaderboard-list');
+  list.innerHTML = '';
+  const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+  leaderboard.forEach((entry, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${index + 1}. ${entry.name}</span><span>${entry.time}s / ${entry.moves} moves</span>`;
+    list.appendChild(li);
+  });
+  board.classList.remove('hidden');
+}
+
