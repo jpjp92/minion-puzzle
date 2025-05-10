@@ -427,11 +427,11 @@ function showLeaderboardModal() {
 
   modal.innerHTML = `
     <div class="leaderboard-modal">
-      <h2>🏆 리더보드</h2>
+      <h2>🏆 Leaderboard</h2>
       <button class="close-btn" onclick="document.getElementById('leaderboard-modal').remove()">&times;</button>
       <table>
         <thead>
-          <tr><th>순위</th><th>플레이어</th><th>소용시간</th><th>이동</th></tr>
+          <tr><th>Rank </th><th>Player</th><th>Time</th><th>Moves</th></tr>
         </thead>
         <tbody id="leaderboard-modal-list"></tbody>
       </table>
