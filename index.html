@@ -36,18 +36,18 @@
         </div>
       </div>
 
+      <!-- 이미지 선택 -->
       <div class="image-selector">
         <label for="image-select">Choose Image:</label>
         <select id="image-select">
           <option value="config/image1.jpg">🏐 Volleyball</option>
           <option value="config/image2.jpg">⚽ Football</option>
           <option value="config/image3.jpg">🏀 Basketball</option>
-          <option value="config/image4.jpg">♟️ Chess</option>
-          <option value="config/image5.jpg">🤺 Fencing</option>
+          <option value="config/image4.jpg">♟ Chess</option>
+          <option value="config/image5.jpg">🧺 Fencing</option>
           <option value="config/image6.jpg">🎾 Tennis</option>
           <option value="config/image7.jpg">🏃 Running</option>
-          <option value="config/image8.jpg">🏹 Archery</option>
-          <option value="config/image9.jpg">🚴 Cycling</option>
+          <option value="config/image8.jpg">🌹 Archery</option>
         </select>
       </div>
 
@@ -66,6 +66,19 @@
             <div class="stat-icon"><i class="fas fa-arrows-alt"></i></div>
             <div id="moves">0</div>
           </div>
+        </div>
+      </div>
+
+      <!-- 인라인 리더보드 -->
+      <div class="leaderboard-panel">
+        <button class="leaderboard-toggle" onclick="toggleInlineLeaderboard()">🏆 리더보드 보기</button>
+        <div id="inline-leaderboard" class="inline-leaderboard hidden">
+          <table>
+            <thead>
+              <tr><th>순위</th><th>플레이어</th><th>시간</th><th>이동</th></tr>
+            </thead>
+            <tbody id="inline-leaderboard-body"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -88,15 +101,9 @@
         <div id="tile-container" class="tile-container"></div>
       </div>
     </div>
-
-    <!-- 리더보드 -->
-    <div id="leaderboard" class="leaderboard hidden">
-      <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
-      <ul id="leaderboard-list"></ul>
-    </div>
   </div>
 
-  <!-- 닉네임 메시지 목록 포함 모니터 -->
+  <!-- 닉네임 입력 모달 -->
   <div id="nickname-modal" class="nickname-modal-overlay">
     <div class="nickname-modal">
       <h2>Welcome!</h2>
