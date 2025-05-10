@@ -416,43 +416,86 @@ function checkComplete() {
   }
 }
 
-// 모달로 리더보드 표시
-function showLeaderboardModal() {
-  const existing = document.getElementById('leaderboard-modal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'leaderboard-modal';
-  modal.className = 'leaderboard-modal-overlay';
-
-  modal.innerHTML = `
-    <div class="leaderboard-modal">
-      <h2>🏆 Leaderboard</h2>
-      <button class="close-btn" onclick="document.getElementById('leaderboard-modal').remove()">&times;</button>
-      <table>
-        <thead>
-          <tr><th>Rank </th><th>Player</th><th>Time</th><th>Moves</th></tr>
-        </thead>
-        <tbody id="leaderboard-modal-list"></tbody>
-      </table>
-    </div>`;
-
-  document.body.appendChild(modal);
-  renderLeaderboardModal();
+// 모달에서 닉네임 입력 후 저장
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim();
+  if (nickname.length === 0) {
+    input.focus();
+    return;
+  }
+  localStorage.setItem('nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
 }
 
-function renderLeaderboardModal() {
-  const list = document.getElementById('leaderboard-modal-list');
-  list.innerHTML = '';
+// 페이지 진입 시 닉네임 확인
+window.addEventListener('DOMContentLoaded', () => {
+  const storedNickname = localStorage.getItem('nickname');
+  if (!storedNickname) {
+    document.getElementById('nickname-modal').style.display = 'flex';
+  }
+});
+
+function checkComplete() {
+  const placedTiles = document.querySelectorAll('.puzzle-board .tile');
+  if (placedTiles.length === gridSize * gridSize) {
+    clearInterval(timerInterval);
+    isGameStarted = false;
+    const nickname = localStorage.getItem('nickname') || 'Anonymous';
+    showMessage(`축하합니다, ${nickname}! (${time}s, ${moves}회)`, 'success', 3000);
+
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+    leaderboard.push({ name: nickname, time, moves });
+    leaderboard.sort((a, b) => a.time - b.time);
+    leaderboard.splice(10);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+    renderInlineLeaderboard();
+
+    placedTiles.forEach((tile, idx) => {
+      setTimeout(() => tile.classList.add('complete'), idx * 100);
+    });
+  }
+}
+
+function toggleInlineLeaderboard() {
+  const container = document.getElementById('inline-leaderboard');
+  container.classList.toggle('hidden');
+  if (!container.classList.contains('loaded')) {
+    renderInlineLeaderboard();
+    container.classList.add('loaded');
+  }
+}
+
+function renderInlineLeaderboard() {
+  const tbody = document.getElementById('inline-leaderboard-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
   const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
   leaderboard.forEach((entry, index) => {
     const tr = document.createElement('tr');
+    const rank = index + 1;
+    let rankDisplay = rank;
+    let rowClass = '';
+
+    if (rank === 1) {
+      rankDisplay = '🥇'; // 🥇
+      rowClass = 'gold-row';
+    } else if (rank === 2) {
+      rankDisplay = '🥈'; // 🥈
+      rowClass = 'silver-row';
+    } else if (rank === 3) {
+      rankDisplay = '🥉'; // 🥉
+      rowClass = 'bronze-row';
+    }
+
+    tr.className = rowClass;
     tr.innerHTML = `
-      <td>${index + 1}</td>
+      <td>${rankDisplay}</td>
       <td>${entry.name}</td>
       <td>${entry.time}s</td>
       <td>${entry.moves}</td>`;
-    list.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
 
