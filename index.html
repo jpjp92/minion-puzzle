@@ -36,9 +36,15 @@
         </div>
       </div>
 
-      <!-- 이미지 선택 UI 추가 -->
-      <div class="image-selector" style="margin: 20px 0; text-align: center;">
-        <label for="image-select" style="margin-right: 10px;">Choose Image:</label>
+      <!-- 닉네임 입력 -->
+      <div class="nickname-input">
+        <label for="nickname">Enter your nickname:</label>
+        <input type="text" id="nickname" placeholder="Your nickname" maxlength="15">
+      </div>
+
+      <!-- 이미지 선택 -->
+      <div class="image-selector">
+        <label for="image-select">Choose Image:</label>
         <select id="image-select">
           <option value="config/image1.jpg">🏐 Volleyball</option>
           <option value="config/image2.jpg">⚽ Football</option>
@@ -48,7 +54,6 @@
           <option value="config/image6.jpg">🎾 Tennis</option>
           <option value="config/image7.jpg">🏃 Running</option>
           <option value="config/image8.jpg">🏹 Archery</option>
-          <option value="config/image9.jpg">🚴 Cycling</option>
         </select>
       </div>
 
@@ -89,8 +94,14 @@
         <div id="tile-container" class="tile-container"></div>
       </div>
     </div>
+
+    <!-- 리더보드 -->
+    <div id="leaderboard" class="leaderboard hidden">
+      <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+      <ul id="leaderboard-list"></ul>
+    </div>
   </div>
 
   <script src="script.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93c150393d324514',t:'MTc0NjYyNzE1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
