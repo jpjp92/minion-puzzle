@@ -19,7 +19,7 @@ A responsive, interactive drag-and-drop puzzle game built with HTML, CSS, and va
 - **Visual Animations**: Feedback animations for correct and incorrect placements
 
 ## 📱 Screenshots
-![image](https://github.com/user-attachments/assets/5f7b490b-712f-4b88-bec2-8feb0ea5081a)
+ >  ![image](https://github.com/user-attachments/assets/5f7b490b-712f-4b88-bec2-8feb0ea5081a)
 
 
 ## 🛠️ Technologies Used
@@ -108,11 +108,4 @@ minion-puzzle-game/
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👨‍💻 Author
-
-Your Name - [Your Website](https://yourwebsite.com) - your.email@example.com
-
-## 🙏 Acknowledgments
-
-- Sports images sourced from [source name]
-- Font Awesome for the icons
-- Inspiration from classic puzzle games
+- johnnyworld9278@gmail.com
