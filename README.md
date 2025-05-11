@@ -1,1 +1,2 @@
-# minion-puzzle
+### Minion Puzzle Game
+---
