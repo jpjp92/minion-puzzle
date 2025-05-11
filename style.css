@@ -531,3 +531,10 @@ h2 {
   font-weight: bold;
   background: #f0f4ff;
 }
+@media (max-width: 600px) {
+  .leaderboard-toast {
+    width: 90%;
+    right: 5%;
+    bottom: 20px;
+  }
+}
