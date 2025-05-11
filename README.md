@@ -1,6 +1,3 @@
-### Minion Puzzle Game
----
-
 # Minion Puzzle Game
 
 ![Minion Puzzle Game](https://img.shields.io/badge/Game-Puzzle-blue)
