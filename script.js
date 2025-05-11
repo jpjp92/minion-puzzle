@@ -352,3 +352,41 @@ function adjustLayout() {
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim();
+  if (!nickname) {
+    input.focus();
+    return;
+  }
+  localStorage.setItem('nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
+}
+
+window.onload = function () {
+  setGridSize(3);
+
+  // 이미지 선택 리스너
+  document.getElementById('image-select').addEventListener('change', function () {
+    originalImage = this.value;
+    document.getElementById('preview-img').src = originalImage;
+    if (isGameStarted) {
+      startGame();
+    }
+  });
+
+  // 닉네임 입력 처리
+  const storedNickname = localStorage.getItem('nickname');
+  const nicknameModal = document.getElementById('nickname-modal');
+  const nicknameInput = document.getElementById('modal-nickname-input');
+
+  if (!storedNickname && nicknameModal && nicknameInput) {
+    nicknameModal.style.display = 'flex';
+
+    nicknameInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        confirmNickname();
+      }
+    });
+  }
+};
