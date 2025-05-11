@@ -36,9 +36,8 @@
         </div>
       </div>
 
-      <!-- 이미지 선택 -->
-      <div class="image-selector" style="margin: 20px 0; text-align: center;">
-        <label for="image-select" style="margin-right: 10px;">Choose Image:</label>
+      <div class="image-selector">
+        <label for="image-select">Choose Image:</label>
         <select id="image-select">
           <option value="config/image1.jpg">🏐 Volleyball</option>
           <option value="config/image2.jpg">⚽ Football</option>
@@ -91,7 +90,7 @@
     </div>
   </div>
 
-  <!-- 사용자 닉네임 입력 모달 -->
+  <!-- 닉네임 입력 모달 -->
   <div id="nickname-modal" class="nickname-modal-overlay" style="display: none;">
     <div class="nickname-modal">
       <h2>Welcome!</h2>
@@ -101,33 +100,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    // 닉네임 처리 로직
-    function confirmNickname() {
-      const input = document.getElementById('modal-nickname-input');
-      const nickname = input.value.trim();
-      if (!nickname) {
-        input.focus();
-        return;
-      }
-      localStorage.setItem('nickname', nickname);
-      document.getElementById('nickname-modal').style.display = 'none';
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const nickname = localStorage.getItem('nickname');
-      const modal = document.getElementById('nickname-modal');
-      const input = document.getElementById('modal-nickname-input');
-      if (!nickname && modal && input) {
-        modal.style.display = 'flex';
-        input.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') {
-            confirmNickname();
-          }
-        });
-      }
-    });
-  </script>
+  <script src="script.js?v=1.0"></script>
 </body>
 </html>
