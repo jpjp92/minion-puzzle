@@ -1,3 +1,4 @@
+// 전체 스크립트
 let gridSize = 3;
 let originalImage = 'config/image1.jpg';
 let tiles = [];
@@ -5,24 +6,10 @@ let timerInterval;
 let time = 0;
 let moves = 0;
 let isGameStarted = false;
-let touchStartX, touchStartY; 
+let touchStartX, touchStartY;
 let activeTouchTile = null;
 let initialTileArrangement = [];
 let resizeTimeout;
-
-// 초기화 함수
-window.onload = function() {
-  setGridSize(3);
-  
-  // 이미지 선택 이벤트 리스너 추가
-  document.getElementById('image-select').addEventListener('change', function() {
-    originalImage = this.value;
-    document.getElementById('preview-img').src = originalImage;
-    if (isGameStarted) {
-      startGame();
-    }
-  });
-};
 
 function setGridSize(size) {
   const buttons = document.querySelectorAll('.difficulty-card');
@@ -59,31 +46,31 @@ function setupPuzzle() {
   puzzleBoard.innerHTML = '';
   const containerSize = 300;
   const tileSize = Math.floor(containerSize / gridSize) - 4;
-  
+
   tiles = [];
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       tiles.push({ x, y });
     }
   }
-  
+
   shuffleArray(tiles);
   initialTileArrangement = [...tiles];
-  
+
   tileContainer.style.width = `${containerSize}px`;
   tileContainer.style.height = `${containerSize}px`;
   tileContainer.style.display = 'grid';
   tileContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   tileContainer.style.gridTemplateRows = `repeat(${Math.ceil(tiles.length / gridSize)}, 1fr)`;
   tileContainer.style.gap = '4px';
-  
+
   puzzleBoard.style.width = `${containerSize}px`;
   puzzleBoard.style.height = `${containerSize}px`;
   puzzleBoard.style.display = 'grid';
   puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gap = '4px';
-  
+
   tiles.forEach(tile => {
     const div = document.createElement('div');
     div.className = 'tile';
@@ -95,16 +82,16 @@ function setupPuzzle() {
     div.setAttribute('draggable', true);
     div.dataset.x = tile.x;
     div.dataset.y = tile.y;
-    
+
     div.addEventListener('dragstart', dragStart);
     div.addEventListener('dragend', dragEnd);
     div.addEventListener('touchstart', touchStart, { passive: false });
     div.addEventListener('touchmove', touchMove, { passive: false });
     div.addEventListener('touchend', touchEnd, { passive: false });
-    
+
     tileContainer.appendChild(div);
   });
-  
+
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const dropzone = document.createElement('div');
@@ -121,7 +108,7 @@ function setupPuzzle() {
       puzzleBoard.appendChild(dropzone);
     }
   }
-  
+
   if (gridSize > 3) {
     const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded;
@@ -130,7 +117,6 @@ function setupPuzzle() {
   }
 }
 
-// 나머지 함수들 (dragStart, dragEnd 등)은 그대로 유지
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -144,22 +130,9 @@ function dragEnd(e) {
   e.target.style.opacity = '1';
 }
 
-function dragOver(e) {
-  e.preventDefault();
-}
-
-function dragEnter(e) {
-  e.preventDefault();
-  if (e.target.classList.contains('dropzone')) {
-    e.target.classList.add('highlight');
-  }
-}
-
-function dragLeave(e) {
-  if (e.target.classList.contains('dropzone')) {
-    e.target.classList.remove('highlight');
-  }
-}
+function dragOver(e) { e.preventDefault(); }
+function dragEnter(e) { if (e.target.classList.contains('dropzone')) e.target.classList.add('highlight'); }
+function dragLeave(e) { if (e.target.classList.contains('dropzone')) e.target.classList.remove('highlight'); }
 
 function drop(e) {
   e.preventDefault();
@@ -267,30 +240,22 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
     tile.style.top = '';
     tile.style.zIndex = '';
     tile.classList.add('wrong');
-    setTimeout(() => {
-      tile.classList.remove('wrong');
-    }, 500);
+    setTimeout(() => tile.classList.remove('wrong'), 500);
   }
 }
 
 function showMessage(text, type, duration = 3000) {
   const existingMessage = document.getElementById('message');
-  if (existingMessage) {
-    existingMessage.remove();
-  }
+  if (existingMessage) existingMessage.remove();
   const toast = document.createElement('div');
   toast.id = 'message';
   toast.className = `toast-message ${type}`;
   toast.textContent = text;
   document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('show');
-  }, 10);
+  setTimeout(() => toast.classList.add('show'), 10);
   setTimeout(() => {
     toast.classList.remove('show');
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
+    setTimeout(() => toast.remove(), 300);
   }, duration);
 }
 
@@ -300,11 +265,7 @@ function checkComplete() {
     clearInterval(timerInterval);
     isGameStarted = false;
     showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 5000);
-    placedTiles.forEach((tile, idx) => {
-      setTimeout(() => {
-        tile.classList.add('complete');
-      }, idx * 100);
-    });
+    placedTiles.forEach((tile, idx) => setTimeout(() => tile.classList.add('complete'), idx * 100));
   }
 }
 
@@ -316,11 +277,9 @@ function shuffleArray(array) {
   return array;
 }
 
-window.addEventListener('resize', function() {
+window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(function() {
-    adjustLayout();
-  }, 250);
+  resizeTimeout = setTimeout(adjustLayout, 250);
 });
 
 function adjustLayout() {
@@ -352,6 +311,7 @@ function adjustLayout() {
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
+
 function confirmNickname() {
   const input = document.getElementById('modal-nickname-input');
   const nickname = input.value.trim();
@@ -363,30 +323,25 @@ function confirmNickname() {
   document.getElementById('nickname-modal').style.display = 'none';
 }
 
-window.onload = function () {
+window.addEventListener('DOMContentLoaded', () => {
   setGridSize(3);
 
-  // 이미지 선택 리스너
   document.getElementById('image-select').addEventListener('change', function () {
     originalImage = this.value;
     document.getElementById('preview-img').src = originalImage;
-    if (isGameStarted) {
-      startGame();
-    }
+    if (isGameStarted) startGame();
   });
 
-  // 닉네임 입력 처리
   const storedNickname = localStorage.getItem('nickname');
   const nicknameModal = document.getElementById('nickname-modal');
   const nicknameInput = document.getElementById('modal-nickname-input');
 
   if (!storedNickname && nicknameModal && nicknameInput) {
     nicknameModal.style.display = 'flex';
-
     nicknameInput.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         confirmNickname();
       }
     });
   }
-};
+});
