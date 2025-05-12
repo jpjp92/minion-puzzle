@@ -6,6 +6,55 @@
   <title>Minion Puzzle</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .difficulty-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .difficulty-btn {
+      background-color: #e3f2fd;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1565c0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .difficulty-btn:hover {
+      background-color: #bbdefb;
+    }
+    .difficulty-btn.active {
+      background-color: #1565c0;
+      color: white;
+    }
+
+    .image-selector-grid {
+      margin: 20px 0;
+      text-align: center;
+    }
+    .image-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .thumbnail {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .thumbnail.selected {
+      border-color: #1565c0;
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.3);
+    }
+  </style>
 </head>
 <body>
   <div class="game-wrapper">
@@ -17,39 +66,27 @@
     <div class="game-panel">
       <div class="difficulty-selector">
         <h3>Choose Difficulty</h3>
-        <div class="difficulty-options">
-          <div id="size-3" class="difficulty-card active" onclick="setGridSize(3)">
-            <div class="card-icon"><i class="fas fa-baby"></i></div>
-            <div class="card-label">Easy</div>
-            <div class="card-detail">3×3</div>
-          </div>
-          <div id="size-4" class="difficulty-card" onclick="setGridSize(4)">
-            <div class="card-icon"><i class="fas fa-user"></i></div>
-            <div class="card-label">Medium</div>
-            <div class="card-detail">4×4</div>
-          </div>
-          <div id="size-5" class="difficulty-card" onclick="setGridSize(5)">
-            <div class="card-icon"><i class="fas fa-crown"></i></div>
-            <div class="card-label">Hard</div>
-            <div class="card-detail">5×5</div>
-          </div>
+        <div class="difficulty-buttons">
+          <button class="difficulty-btn active" data-size="3" onclick="setGridSize(3)">Easy</button>
+          <button class="difficulty-btn" data-size="4" onclick="setGridSize(4)">Medium</button>
+          <button class="difficulty-btn" data-size="5" onclick="setGridSize(5)">Hard</button>
         </div>
       </div>
 
-      <div class="image-selector">
-        <label for="image-select">Choose Image:</label>
-        <select id="image-select">
-          <option value="config/image1.jpg">🏐 Volleyball</option>
-          <option value="config/image2.jpg">⚽ Football</option>
-          <option value="config/image3.jpg">🏀 Basketball</option>
-          <option value="config/image4.jpg">♟️ Chess</option>
-          <option value="config/image5.jpg">🤺 Fencing</option>
-          <option value="config/image6.jpg">🎾 Tennis</option>
-          <option value="config/image7.jpg">🏃 Running</option>
-          <option value="config/image8.jpg">🏹 Archery</option>
-          <option value="config/image9.jpg">🚴 Cycling</option>
-          <option value="config/image10.jpg">🥋 Taekwondo</option>
-        </select>
+      <div class="image-selector-grid">
+        <h3>Choose Image</h3>
+        <div class="image-grid">
+          <img src="config/image1.jpg" class="thumbnail selected" onclick="selectImage(this, 'config/image1.jpg')" />
+          <img src="config/image2.jpg" class="thumbnail" onclick="selectImage(this, 'config/image2.jpg')" />
+          <img src="config/image3.jpg" class="thumbnail" onclick="selectImage(this, 'config/image3.jpg')" />
+          <img src="config/image4.jpg" class="thumbnail" onclick="selectImage(this, 'config/image4.jpg')" />
+          <img src="config/image5.jpg" class="thumbnail" onclick="selectImage(this, 'config/image5.jpg')" />
+          <img src="config/image6.jpg" class="thumbnail" onclick="selectImage(this, 'config/image6.jpg')" />
+          <img src="config/image7.jpg" class="thumbnail" onclick="selectImage(this, 'config/image7.jpg')" />
+          <img src="config/image8.jpg" class="thumbnail" onclick="selectImage(this, 'config/image8.jpg')" />
+          <img src="config/image9.jpg" class="thumbnail" onclick="selectImage(this, 'config/image9.jpg')" />
+          <img src="config/image10.jpg" class="thumbnail" onclick="selectImage(this, 'config/image10.jpg')" />
+        </div>
       </div>
 
       <div class="panel-bottom">
@@ -91,7 +128,6 @@
     </div>
   </div>
 
-  <!-- 닉네임 입력 모달 -->
   <div id="nickname-modal" class="nickname-modal-overlay" style="display: none;">
     <div class="nickname-modal">
       <h2>Welcome!</h2>
@@ -102,5 +138,21 @@
   </div>
 
   <script src="script.js?v=1.0"></script>
+  <script>
+    function selectImage(el, path) {
+      document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
+      el.classList.add('selected');
+      originalImage = path;
+      document.getElementById('preview-img').src = path;
+      if (isGameStarted) startGame();
+    }
+
+    function setGridSize(size) {
+      document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.difficulty-btn[data-size="${size}"]`).classList.add('active');
+      gridSize = size;
+      if (isGameStarted) startGame();
+    }
+  </script>
 </body>
 </html>
