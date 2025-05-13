@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Minion Puzzle</title>
-  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     body {
@@ -113,7 +112,7 @@
     
     .image-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr); /* 6 thumbnails per row on desktop */
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 20px;
       padding: 0 20px;
       max-width: 900px;
@@ -123,6 +122,7 @@
     .thumbnail-wrapper {
       position: relative;
       border-radius: 12px;
+      overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
       aspect-ratio: 1/1;
@@ -132,7 +132,7 @@
     }
     
     .thumbnail-wrapper:hover {
-      z-index: 10; /* Ensures the wrapper is above others */
+      z-index: 10;
     }
     
     .thumbnail {
@@ -145,7 +145,7 @@
     }
     
     .thumbnail-wrapper:hover .thumbnail {
-      transform: scale(1.5); /* Reduced scale for subtler effect */
+      transform: scale(2);
       border-radius: 8px;
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
     }
@@ -228,7 +228,7 @@
     /* Responsive adjustments */
     @media (max-width: 900px) {
       .image-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 thumbnails per row */
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 15px;
       }
       
@@ -238,23 +238,19 @@
       }
       
       .thumbnail-wrapper:hover .thumbnail {
-        transform: scale(1.3); /* Further reduced scale for smaller screens */
+        transform: scale(1.5); /* 모바일에서는 확대 효과를 줄임 */
       }
     }
     
     @media (max-width: 600px) {
       .image-grid {
-        grid-template-columns: repeat(4, 1fr); /* Maintain 4 thumbnails per row */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 10px;
       }
       
       .thumbnail-wrapper {
         width: 100px;
         height: 100px;
-      }
-      
-      .thumbnail-wrapper:hover .thumbnail {
-        transform: scale(1.3); /* Consistent scale for mobile */
       }
     }
     
@@ -292,63 +288,51 @@
         <h3>Choose Image</h3>
         <div class="image-grid">
           <div class="thumbnail-wrapper">
-            <img src="config/image1.jpg" class="thumbnail selected" onclick="selectImage(this, 'config/image1.jpg')" />
-            <div class="thumbnail-overlay">Image 1</div>
+            <img src="/api/placeholder/140/140" class="thumbnail selected" onclick="selectImage(this, 'config/image1.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image2.jpg" class="thumbnail" onclick="selectImage(this, 'config/image2.jpg')" />
-            <div class="thumbnail-overlay">Image 2</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image2.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image3.jpg" class="thumbnail" onclick="selectImage(this, 'config/image3.jpg')" />
-            <div class="thumbnail-overlay">Image 3</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image3.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image4.jpg" class="thumbnail" onclick="selectImage(this, 'config/image4.jpg')" />
-            <div class="thumbnail-overlay">Image 4</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image4.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image5.jpg" class="thumbnail" onclick="selectImage(this, 'config/image5.jpg')" />
-            <div class="thumbnail-overlay">Image 5</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image5.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image6.jpg" class="thumbnail" onclick="selectImage(this, 'config/image6.jpg')" />
-            <div class="thumbnail-overlay">Image 6</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image6.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image7.jpg" class="thumbnail" onclick="selectImage(this, 'config/image7.jpg')" />
-            <div class="thumbnail-overlay">Image 7</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image7.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image8.jpg" class="thumbnail" onclick="selectImage(this, 'config/image8.jpg')" />
-            <div class="thumbnail-overlay">Image 8</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image8.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image9.jpg" class="thumbnail" onclick="selectImage(this, 'config/image9.jpg')" />
-            <div class="thumbnail-overlay">Image 9</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image9.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image10.jpg" class="thumbnail" onclick="selectImage(this, 'config/image10.jpg')" />
-            <div class="thumbnail-overlay">Image 10</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image10.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image11.jpg" class="thumbnail" onclick="selectImage(this, 'config/image11.jpg')" />
-            <div class="thumbnail-overlay">Image 11</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image11.jpg')" />
           </div>
           
           <div class="thumbnail-wrapper">
-            <img src="config/image12.jpg" class="thumbnail" onclick="selectImage(this, 'config/image12.jpg')" />
-            <div class="thumbnail-overlay">Image 12</div>
+            <img src="/api/placeholder/140/140" class="thumbnail" onclick="selectImage(this, 'config/image12.jpg')" />
           </div>
         </div>
       </div>
