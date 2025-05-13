@@ -36,10 +36,12 @@
       text-align: center;
     }
     .image-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr); /* 6 thumbnails per row on desktop */
       gap: 10px;
+      justify-content: center;
+      max-width: 600px; /* Limits grid width for better alignment */
+      margin: 0 auto;
     }
     .thumbnail {
       width: 60px;
@@ -48,11 +50,26 @@
       object-fit: cover;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: border-color 0.3s ease;
+      transition: transform 0.3s ease, border-color 0.3s ease; /* Smooth scaling */
+    }
+    .thumbnail:hover {
+      transform: scale(2); /* 2x size on hover */
+      z-index: 10; /* Ensure hovered image is above others */
     }
     .thumbnail.selected {
       border-color: #1565c0;
       box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.3);
+    }
+
+    /* Mobile styles */
+    @media (max-width: 600px) {
+      .image-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 thumbnails per row on mobile */
+        max-width: 300px; /* Adjust for smaller screens */
+      }
+      .thumbnail:hover {
+        transform: none; /* Disable hover effect on mobile */
+      }
     }
   </style>
 </head>
