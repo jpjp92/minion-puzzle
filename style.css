@@ -68,11 +68,37 @@ h2 {
   margin-right: auto;
 }
 
-.difficulty-selector h3 {
-  color: #546e7a;
+/* 일관된 h3 스타일 */
+.game-panel h3 {
+  color: #1565c0;
   font-size: 20px;
+  font-weight: 700;
   margin-top: 0;
   margin-bottom: 15px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.difficulty-btn {
+  background-color: #e3f2fd;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1565c0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.difficulty-btn:hover {
+  background-color: #bbdefb;
+}
+.difficulty-btn.active {
+  background-color: #1565c0;
+  color: white;
 }
 
 .difficulty-options {
@@ -463,6 +489,13 @@ h2 {
     justify-content: center;
     margin-top: 0;
   }
+  .image-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 300px;
+  }
+  .thumbnail:hover {
+    transform: none;
+  }
 }
 
 /* 이미지 선택 드롭다운 스타일 추가 */
@@ -491,4 +524,35 @@ h2 {
 
 .image-selector select:hover {
   border-color: #1565c0;
+}
+
+/* 이미지 선택 그리드 스타일 */
+.image-selector-grid {
+  margin: 20px 0;
+  text-align: center;
+}
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.thumbnail:hover {
+  transform: scale(1.5);
+  z-index: 8;
+}
+.thumbnail.selected {
+  border-color: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.3);
 }
