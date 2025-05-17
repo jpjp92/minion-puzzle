@@ -19,7 +19,8 @@ A responsive, interactive drag-and-drop puzzle game built with HTML, CSS, and va
 - **Visual Animations**: Feedback animations for correct and incorrect placements
 
 ## 📱 Screenshots
- >  ![Uploading image.png…]()
+ >  ![image](https://github.com/user-attachments/assets/015169f0-758b-4865-98fe-7397ede5d75c)
+
 
 
 
