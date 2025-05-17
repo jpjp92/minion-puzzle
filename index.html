@@ -12,12 +12,12 @@
   <div class="game-wrapper">
     <div class="game-header">
       <h1><span class="logo-text">Minion</span> Puzzle <span class="emoji">🎮</span></h1>
-      <div class="game-intro">Drag & drop puzzle pieces to complete the image!</div>
+      <div class="game-intro">Drag pieces to complete the image!</div>
     </div>
 
     <div class="game-panel">
       <div class="difficulty-selector">
-        <h3>Choose Difficulty</h3>
+        <h3>Choose Difficulty <span aria-label="level" title="Difficulty">🎯</span></h3>
         <div class="difficulty-buttons">
           <button class="difficulty-btn active" data-size="3" onclick="setGridSize(3)">Easy</button>
           <button class="difficulty-btn" data-size="4" onclick="setGridSize(4)">Medium</button>
@@ -26,7 +26,7 @@
       </div>
 
       <div class="image-selector-grid">
-        <h3>Choose Image</h3>
+        <h3>Choose Image <span aria-label="picture" title="Image">🖼️</span></h3>
         <div class="image-grid">
           <img src="config/image1.jpg" class="thumbnail selected" onclick="selectImage(this, 'config/image1.jpg')" />
           <img src="config/image2.jpg" class="thumbnail" onclick="selectImage(this, 'config/image2.jpg')" />
