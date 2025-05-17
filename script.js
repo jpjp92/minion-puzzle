@@ -349,8 +349,13 @@ function adjustLayout() {
   const tileContainer = document.getElementById('tile-container');
   const puzzleBoard = document.getElementById('puzzle-board');
   const isMobile = window.innerWidth <= 600;
+  // 모바일에서는 panel의 실제 너비 또는 window.innerWidth를 기준으로 계산
+  const panel = document.querySelector('.game-panel');
+  const panelWidth = panel ? panel.offsetWidth : window.innerWidth;
+  const containerSize = isMobile
+    ? Math.min(panelWidth, window.innerWidth, 340) // 340~360px 정도로 제한
+    : 300;
   const columns = isMobile ? 4 : gridSize;
-  const containerSize = Math.min(300, window.innerWidth * 0.8);
   const tileSize = Math.floor(containerSize / columns) - 4;
   tileContainer.style.width = `${containerSize}px`;
   puzzleBoard.style.width = `${containerSize}px`;
