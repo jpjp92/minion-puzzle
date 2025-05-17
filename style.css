@@ -12,17 +12,6 @@ body {
 .game-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* game-panel과 game-container의 너비를 동일하게 */
-.game-panel,
-.game-container {
-  width: 100%;
-  max-width: 980px;
-  box-sizing: border-box;
 }
 
 .game-header {
@@ -74,6 +63,7 @@ h2 {
   padding: 20px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -253,18 +243,16 @@ h2 {
   font-size: 20px;
 }
 
-/* game-container의 3개 박스가 한 줄에 나란히 배치되도록 */
 .game-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: start;
+  flex-wrap: wrap;
   gap: 20px;
   margin-top: 20px;
 }
 
 .game-section {
-  flex: 1 1 0;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -501,20 +489,12 @@ h2 {
     justify-content: center;
     margin-top: 0;
   }
-  .game-container,
-  .game-panel {
-    max-width: 100%;
-    width: 100%;
-  }
   .image-grid {
     grid-template-columns: repeat(4, 1fr);
     max-width: 300px;
   }
   .thumbnail:hover {
     transform: none;
-  }
-  .game-section {
-    min-width: 0;
   }
 }
 

@@ -330,20 +330,13 @@ function selectImage(el, path) {
   if (isGameStarted) startGame();
 }
 
-<<<<<<< HEAD
 function setGridSizeButton(size) {
-=======
-function setGridSize(size) {
->>>>>>> 4423d863960b161b2642074d404a2a21ae1ebb04
   document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.difficulty-btn[data-size="${size}"]`).classList.add('active');
   gridSize = size;
   if (isGameStarted) startGame();
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 4423d863960b161b2642074d404a2a21ae1ebb04
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
