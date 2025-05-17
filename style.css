@@ -513,7 +513,7 @@ h2 {
   margin: 0 auto;
 }
 .thumbnail {
-  width: 75px;
+  width: 70;
   height: 70px;
   border-radius: 8px;
   object-fit: cover;
