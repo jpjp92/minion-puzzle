@@ -352,19 +352,3 @@ function adjustLayout() {
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
-function resetGame() {
-  clearInterval(timerInterval);
-  time = 0;
-  moves = 0;
-  isGameStarted = false;
-  document.getElementById('timer').textContent = `0s`;
-  document.getElementById('moves').textContent = `0`;
-  const existingMessage = document.getElementById('message');
-  if (existingMessage) {
-    existingMessage.remove();
-  }
-  const tiles = document.querySelectorAll('.tile');
-  tiles.forEach(tile => {
-    tile.remove();
-  });
-}
