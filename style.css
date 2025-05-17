@@ -609,3 +609,10 @@ h2 {
 .image-selector select:hover {
   border-color: #1565c0;
 }
+
+@media (max-width: 600px) {
+  .image-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 300px;
+  }
+}
