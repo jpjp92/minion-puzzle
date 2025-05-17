@@ -531,6 +531,38 @@ h2 {
 }
 
 /* 모바일 반응형 스타일 수정 */
+/* 모바일 반응형 스타일 */
+@media (max-width: 900px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tile-container, .puzzle-board, .preview {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .difficulty-options {
+    gap: 10px;
+  }
+
+  .difficulty-card {
+    padding: 15px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .toast-message {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    text-align: center;
+  }
+}
+
+/* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
     padding-bottom: 20px;
@@ -548,20 +580,32 @@ h2 {
     justify-content: center;
     margin-top: 0;
   }
-  .image-grid {
-    grid-template-columns: repeat(4, 1fr);
-    max-width: 300px;
-  }
-  .thumbnail:hover {
-    transform: none;
-  }
-  .tile-container,
-  .puzzle-board,
-  .preview {
-    min-width: 0 !important;
-    min-height: 0 !important;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100vw;
-  }
+}
+
+/* 이미지 선택 드롭다운 스타일 추가 */
+.image-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.image-selector label {
+  font-size: 16px;
+  color: #546e7a;
+  margin-right: 10px;
+}
+
+.image-selector select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.image-selector select:hover {
+  border-color: #1565c0;
 }
