@@ -515,7 +515,7 @@ h2 {
 .thumbnail {
   width: 70;
   height: 70px;
-  border-radius: 8px;
+  border-radius: 5x;
   object-fit: cover;
   cursor: pointer;
   border: 1px solid transparent;
@@ -527,7 +527,7 @@ h2 {
 }
 .thumbnail.selected {
   border-color: #1565c0;
-  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.3);
+  box-shadow: 0 0 0 1px rgba(21, 101, 192, 0.3);
 }
 
 /* 모바일 반응형 스타일 수정 */
