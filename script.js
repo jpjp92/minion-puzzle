@@ -351,12 +351,17 @@ function adjustLayout() {
   const isMobile = window.innerWidth <= 600;
   const columns = isMobile ? 4 : gridSize;
 
-  // 패널의 실제 너비를 기준으로 퍼즐 영역 크기 제한
+  // 패널의 실제 너비를 기준으로 퍼즐 영역 크기 제한 (패딩 고려)
   const panel = document.querySelector('.game-panel');
+  const panelPadding = 40; // panel padding-left + padding-right (20px씩)
   const panelWidth = panel ? panel.offsetWidth : window.innerWidth;
-  // 모바일에서는 패널, window, 340px 중 가장 작은 값 사용
+  const maxAvailable = isMobile
+    ? Math.min(panelWidth, window.innerWidth) - panelPadding
+    : 300;
+
+  // 퍼즐이 panel을 넘지 않도록, columns 개수에 맞춰 타일 크기 자동 조정
   const containerSize = isMobile
-    ? Math.min(panelWidth, window.innerWidth, 340)
+    ? Math.min(maxAvailable, window.innerWidth - 32) // 16px 마진 고려
     : 300;
 
   const tileSize = Math.floor(containerSize / columns) - 4;
