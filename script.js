@@ -316,6 +316,20 @@ function shuffleArray(array) {
   return array;
 }
 
+function selectImage(el, path) {
+  document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
+  el.classList.add('selected');
+  originalImage = path;
+  document.getElementById('preview-img').src = path;
+  if (isGameStarted) startGame();
+}
+
+function setGridSize(size) {
+  document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.difficulty-btn[data-size="${size}"]`).classList.add('active');
+  gridSize = size;
+  if (isGameStarted) startGame();
+}
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
