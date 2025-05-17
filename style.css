@@ -470,41 +470,6 @@ h2 {
   }
 }
 
-/* 모바일 반응형 스타일 수정 */
-@media (max-width: 600px) {
-  .panel-bottom {
-    padding-bottom: 20px;
-    margin-bottom: 10px;
-  }
-  
-  #start-btn {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .game-stats {
-    position: relative;
-    width: 100%;
-    justify-content: center;
-    margin-top: 0;
-  }
-  .image-grid {
-    grid-template-columns: repeat(4, 1fr);
-    max-width: 300px;
-  }
-  .thumbnail:hover {
-    transform: none;
-  }
-  .tile-container,
-  .puzzle-board,
-  .preview {
-    min-width: 0 !important;
-    min-height: 0 !important;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100vw;
-  }
-}
 
 /* 이미지 선택 드롭다운 스타일 추가 */
 .image-selector {
@@ -563,4 +528,40 @@ h2 {
 .thumbnail.selected {
   border-color: #1565c0;
   box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.3);
+}
+
+/* 모바일 반응형 스타일 수정 */
+@media (max-width: 600px) {
+  .panel-bottom {
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }
+  
+  #start-btn {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .game-stats {
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0;
+  }
+  .image-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 300px;
+  }
+  .thumbnail:hover {
+    transform: none;
+  }
+  .tile-container,
+  .puzzle-board,
+  .preview {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+  }
 }
