@@ -5,7 +5,7 @@ let timerInterval;
 let time = 0;
 let moves = 0;
 let isGameStarted = false;
-let touchStartX, touchStartY;
+let touchStartX, touchStartY; 
 let activeTouchTile = null;
 let initialTileArrangement = [];
 let resizeTimeout;
@@ -13,25 +13,21 @@ let resizeTimeout;
 // 초기화 함수
 window.onload = function() {
   setGridSize(3);
-
+  
   // 이미지 선택 이벤트 리스너 추가
-  const imageSelect = document.getElementById('image-select');
-  if (imageSelect) {
-    imageSelect.addEventListener('change', function() {
-      originalImage = this.value;
-      document.getElementById('preview-img').src = originalImage;
-      if (isGameStarted) {
-        startGame();
-      }
-    });
-  }
+  document.getElementById('image-select').addEventListener('change', function() {
+    originalImage = this.value;
+    document.getElementById('preview-img').src = originalImage;
+    if (isGameStarted) {
+      startGame();
+    }
+  });
 };
 
 function setGridSize(size) {
   const buttons = document.querySelectorAll('.difficulty-card');
   buttons.forEach(btn => btn.classList.remove('active'));
-  const sizeBtn = document.getElementById(`size-${size}`);
-  if (sizeBtn) sizeBtn.classList.add('active');
+  document.getElementById(`size-${size}`).classList.add('active');
   gridSize = size;
   if (isGameStarted) {
     startGame();
@@ -62,35 +58,32 @@ function setupPuzzle() {
   tileContainer.innerHTML = '';
   puzzleBoard.innerHTML = '';
   const containerSize = 300;
-  // 모바일 환경이면 한 row에 4개, 아니면 gridSize
-  const isMobile = window.innerWidth <= 600;
-  const columns = isMobile ? 4 : gridSize;
-  const tileSize = Math.floor(containerSize / columns) - 4;
-
+  const tileSize = Math.floor(containerSize / gridSize) - 4;
+  
   tiles = [];
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       tiles.push({ x, y });
     }
   }
-
+  
   shuffleArray(tiles);
   initialTileArrangement = [...tiles];
-
+  
   tileContainer.style.width = `${containerSize}px`;
   tileContainer.style.height = `${containerSize}px`;
   tileContainer.style.display = 'grid';
-  tileContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-  tileContainer.style.gridTemplateRows = `repeat(${Math.ceil(tiles.length / columns)}, 1fr)`;
+  tileContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+  tileContainer.style.gridTemplateRows = `repeat(${Math.ceil(tiles.length / gridSize)}, 1fr)`;
   tileContainer.style.gap = '4px';
-
+  
   puzzleBoard.style.width = `${containerSize}px`;
   puzzleBoard.style.height = `${containerSize}px`;
   puzzleBoard.style.display = 'grid';
   puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gap = '4px';
-
+  
   tiles.forEach(tile => {
     const div = document.createElement('div');
     div.className = 'tile';
@@ -102,16 +95,16 @@ function setupPuzzle() {
     div.setAttribute('draggable', true);
     div.dataset.x = tile.x;
     div.dataset.y = tile.y;
-
+    
     div.addEventListener('dragstart', dragStart);
     div.addEventListener('dragend', dragEnd);
     div.addEventListener('touchstart', touchStart, { passive: false });
     div.addEventListener('touchmove', touchMove, { passive: false });
     div.addEventListener('touchend', touchEnd, { passive: false });
-
+    
     tileContainer.appendChild(div);
   });
-
+  
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const dropzone = document.createElement('div');
@@ -128,15 +121,16 @@ function setupPuzzle() {
       puzzleBoard.appendChild(dropzone);
     }
   }
-
+  
   if (gridSize > 3) {
-    const rowsNeeded = Math.ceil(tiles.length / columns);
+    const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded;
     tileContainer.style.height = `${adjustedHeight}px`;
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
 }
 
+// 나머지 함수들 (dragStart, dragEnd 등)은 그대로 유지
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -322,21 +316,6 @@ function shuffleArray(array) {
   return array;
 }
 
-function selectImage(el, path) {
-  document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
-  el.classList.add('selected');
-  originalImage = path;
-  document.getElementById('preview-img').src = path;
-  if (isGameStarted) startGame();
-}
-
-function setGridSizeButton(size) {
-  document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`.difficulty-btn[data-size="${size}"]`).classList.add('active');
-  gridSize = size;
-  if (isGameStarted) startGame();
-}
-
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
@@ -348,26 +327,10 @@ function adjustLayout() {
   if (!isGameStarted) return;
   const tileContainer = document.getElementById('tile-container');
   const puzzleBoard = document.getElementById('puzzle-board');
-  const isMobile = window.innerWidth <= 600;
-  const columns = isMobile ? 4 : gridSize;
-
-  // 패널의 실제 너비를 기준으로 퍼즐 영역 크기 제한 (패딩 고려)
-  const panel = document.querySelector('.game-panel');
-  const panelPadding = 40; // panel padding-left + padding-right (20px씩)
-  const panelWidth = panel ? panel.offsetWidth : window.innerWidth;
-  const maxAvailable = isMobile
-    ? Math.min(panelWidth, window.innerWidth) - panelPadding
-    : 300;
-
-  // 퍼즐이 panel을 넘지 않도록, columns 개수에 맞춰 타일 크기 자동 조정
-  const containerSize = isMobile
-    ? Math.min(maxAvailable, window.innerWidth - 32) // 16px 마진 고려
-    : 300;
-
-  const tileSize = Math.floor(containerSize / columns) - 4;
+  const containerSize = Math.min(300, window.innerWidth * 0.8);
+  const tileSize = Math.floor(containerSize / gridSize) - 4;
   tileContainer.style.width = `${containerSize}px`;
   puzzleBoard.style.width = `${containerSize}px`;
-
   const existingTiles = document.querySelectorAll('.tile');
   existingTiles.forEach(tile => {
     tile.style.width = `${tileSize}px`;
@@ -383,9 +346,25 @@ function adjustLayout() {
     zone.style.height = `${tileSize}px`;
   });
   if (gridSize > 3) {
-    const rowsNeeded = Math.ceil(tiles.length / columns);
+    const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded;
     tileContainer.style.height = `${adjustedHeight}px`;
     tileContainer.style.minHeight = `${adjustedHeight}px`;
   }
+}
+function resetGame() {
+  clearInterval(timerInterval);
+  time = 0;
+  moves = 0;
+  isGameStarted = false;
+  document.getElementById('timer').textContent = `0s`;
+  document.getElementById('moves').textContent = `0`;
+  const existingMessage = document.getElementById('message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  const tiles = document.querySelectorAll('.tile');
+  tiles.forEach(tile => {
+    tile.remove();
+  });
 }
