@@ -15,14 +15,14 @@ window.onload = function() {
   setGridSize(3);
   
   // 이미지 선택 이벤트 리스너 추가
-//   document.getElementById('image-select').addEventListener('change', function() {
-//     originalImage = this.value;
-//     document.getElementById('preview-img').src = originalImage;
-//     if (isGameStarted) {
-//       startGame();
-//     }
-//   });
-// };
+  document.getElementById('image-select').addEventListener('change', function() {
+    originalImage = this.value;
+    document.getElementById('preview-img').src = originalImage;
+    if (isGameStarted) {
+      startGame();
+    }
+  });
+};
 
 function setGridSize(size) {
   const buttons = document.querySelectorAll('.difficulty-card');
