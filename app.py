@@ -16,19 +16,27 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def index():
     return render_template('index.html')
 
+@app.route('/api/test-supabase')
+def test_supabase():
+    try:
+        response = supabase.table('puzzle_scores').select('player_name').limit(1).execute()
+        return jsonify({'status': 'Connected', 'data': response.data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/scores', methods=['GET'])
 def get_scores():
     try:
         response = supabase.table('puzzle_scores')\
             .select('player_name,score,difficulty,time_taken,moves,created_at')\
-            .order('score', desc=True)\
-            .order('time_taken', asc=True)\
-            .order('moves', asc=True)\
+            .order('score', descending=True)\
+            .order('time_taken', descending=False)\
+            .order('moves', descending=False)\
             .limit(10)\
             .execute()
         return jsonify(response.data)
     except Exception as e:
-        print('GET /api/scores Error:', e)  # Improved logging
+        print('GET /api/scores Error:', e)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/scores', methods=['POST'])
@@ -48,7 +56,7 @@ def save_score():
         }).execute()
         return jsonify(result.data)
     except Exception as e:
-        print('POST /api/scores Error:', e)  # Improved logging
+        print('POST /api/scores Error:', e)
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
