@@ -371,6 +371,15 @@ function showMessage(text, type, duration = 3000) {
   }, duration);
 }
 
+
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim() || 'Anonymous';
+  localStorage.setItem('minion-nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
+  // 리더보드 모달을 여기서 띄우지 않음!
+}
+
 // 게임 완료 시 점수 저장 및 리더보드 표시
 function checkComplete() {
   const placedTiles = document.querySelectorAll('.puzzle-board .tile');
