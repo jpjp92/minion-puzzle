@@ -13,8 +13,8 @@ let resizeTimeout;
 // 점수 계산 함수
 function calculateScore(time_taken, moves) {
   const BASE_SCORE = 100;
-  const TIME_WEIGHT = 0.3;   // (예: 1초당 0.3점 감점)
-  const MOVE_WEIGHT = 0.1;   // (예: 1회 이동당 0.1점 감점)
+  const TIME_WEIGHT = 0.3;
+  const MOVE_WEIGHT = 0.1;
   let score = BASE_SCORE - (time_taken * TIME_WEIGHT) - (moves * MOVE_WEIGHT);
   return Math.max(score, 0);
 }
@@ -60,6 +60,15 @@ async function updateLeaderboard() {
   }
 }
 
+// 닉네임 입력 및 저장
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim() || 'Anonymous';
+  localStorage.setItem('minion-nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
+  // 리더보드 모달을 여기서 띄우지 않음!
+}
+
 // 초기화 함수
 window.onload = function() {
   // 새로고침마다 닉네임 삭제
@@ -75,14 +84,6 @@ window.onload = function() {
   if (showBtn) showBtn.onclick = () => { updateLeaderboard().then(showLeaderboardModal); };
   if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
 };
-
-// 닉네임 입력 및 저장
-function confirmNickname() {
-  const input = document.getElementById('modal-nickname-input');
-  const nickname = input.value.trim() || 'Anonymous';
-  localStorage.setItem('minion-nickname', nickname);
-  document.getElementById('nickname-modal').style.display = 'none';
-}
 
 function setGridSize(size) {
   document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
