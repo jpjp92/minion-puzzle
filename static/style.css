@@ -587,6 +587,28 @@ h2 {
   }
 }
 
+/* 닉네임 입력 모달 중앙 정렬 */
+.nickname-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;    /* 세로 중앙 */
+  justify-content: center; /* 가로 중앙 */
+  z-index: 2000;
+}
+.nickname-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  text-align: center;
+  min-width: 260px;
+}
+
 /* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
