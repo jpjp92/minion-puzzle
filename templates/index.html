@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Minion Puzzle</title>
-  <link rel="stylesheet" href="style.css" />
+  <!-- static 폴더에서 불러오도록 경로 수정 -->
+  <link rel="stylesheet" href="/static/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
@@ -27,18 +28,18 @@
       <div class="image-selector-grid">
         <h3>Choose Image <span aria-label="picture" title="Image">🖼️</span></h3>
         <div class="image-grid">
-          <img src="static/image1.jpg" class="thumbnail selected" onclick="selectImage(this, 'static/image1.jpg')" />
-          <img src="static/image2.jpg" class="thumbnail" onclick="selectImage(this, 'static/image2.jpg')" />
-          <img src="static/image3.jpg" class="thumbnail" onclick="selectImage(this, 'static/image3.jpg')" />
-          <img src="static/image4.jpg" class="thumbnail" onclick="selectImage(this, 'static/image4.jpg')" />
-          <img src="static/image5.jpg" class="thumbnail" onclick="selectImage(this, 'static/image5.jpg')" />
-          <img src="static/image6.jpg" class="thumbnail" onclick="selectImage(this, 'static/image6.jpg')" />
-          <img src="static/image7.jpg" class="thumbnail" onclick="selectImage(this, 'static/image7.jpg')" />
-          <img src="static/image8.jpg" class="thumbnail" onclick="selectImage(this, 'static/image8.jpg')" />
-          <img src="static/image9.jpg" class="thumbnail" onclick="selectImage(this, 'static/image9.jpg')" />
-          <img src="static/image10.jpg" class="thumbnail" onclick="selectImage(this, 'static/image10.jpg')" />
-          <img src="static/image11.jpg" class="thumbnail" onclick="selectImage(this, 'static/image11.jpg')" />
-          <img src="static/image12.jpg" class="thumbnail" onclick="selectImage(this, 'static/image12.jpg')" />
+          <img src="/static/image1.jpg" class="thumbnail selected" onclick="selectImage(this, '/static/image1.jpg')" />
+          <img src="/static/image2.jpg" class="thumbnail" onclick="selectImage(this, '/static/image2.jpg')" />
+          <img src="/static/image3.jpg" class="thumbnail" onclick="selectImage(this, '/static/image3.jpg')" />
+          <img src="/static/image4.jpg" class="thumbnail" onclick="selectImage(this, '/static/image4.jpg')" />
+          <img src="/static/image5.jpg" class="thumbnail" onclick="selectImage(this, '/static/image5.jpg')" />
+          <img src="/static/image6.jpg" class="thumbnail" onclick="selectImage(this, '/static/image6.jpg')" />
+          <img src="/static/image7.jpg" class="thumbnail" onclick="selectImage(this, '/static/image7.jpg')" />
+          <img src="/static/image8.jpg" class="thumbnail" onclick="selectImage(this, '/static/image8.jpg')" />
+          <img src="/static/image9.jpg" class="thumbnail" onclick="selectImage(this, '/static/image9.jpg')" />
+          <img src="/static/image10.jpg" class="thumbnail" onclick="selectImage(this, '/static/image10.jpg')" />
+          <img src="/static/image11.jpg" class="thumbnail" onclick="selectImage(this, '/static/image11.jpg')" />
+          <img src="/static/image12.jpg" class="thumbnail" onclick="selectImage(this, '/static/image12.jpg')" />
         </div>
       </div>
 
@@ -71,7 +72,7 @@
       <div class="game-section">
         <h2><i class="fas fa-image"></i> Preview</h2>
         <div id="preview" class="preview">
-          <img id="preview-img" src="config/image1.jpg" alt="미리보기" />
+          <img id="preview-img" src="/static/image1.jpg" alt="미리보기" />
         </div>
       </div>
 
@@ -122,6 +123,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=1.0"></script>
+  <!-- static 폴더에서 불러오도록 경로 수정 -->
+  <script src="/static/script.js?v=1.0"></script>
 </body>
 </html>
