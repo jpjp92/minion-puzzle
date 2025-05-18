@@ -99,11 +99,11 @@
   </div>
 
   <!-- 리더보드 모달 -->
-<!--   <div id="leaderboardModal" class="modal">
+  <div id="leaderboardModal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
         <h2>🏆 Leaderboard</h2>
-        <span class="close" id="closeLeaderboardBtn">×</span>
+        <span class="close" id="closeLeaderboardBtn">&times;</span>
       </div>
       <div class="modal-body">
         <table id="scoresTable">
@@ -121,7 +121,7 @@
         </table>
       </div>
     </div>
-  </div> -->
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -136,16 +136,34 @@
       const showBtn = document.getElementById('showLeaderboardBtn');
       const closeBtn = document.getElementById('closeLeaderboardBtn');
       const leaderboardModal = document.getElementById('leaderboardModal');
+      
       if (showBtn) {
-        showBtn.onclick = () => {
-          updateLeaderboard().then(showLeaderboardModal).catch(err => console.error(err));
+        showBtn.onclick = function() {
+          updateLeaderboard().then(function() {
+            showLeaderboardModal();
+          }).catch(function(err) {
+            console.error(err);
+          });
         };
       }
-      if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
+      
+      if (closeBtn) {
+        closeBtn.onclick = hideLeaderboardModal;
+      }
+      
       if (leaderboardModal) {
-        leaderboardModal.onclick = (e) => {
-          if (e.target === leaderboardModal) hideLeaderboardModal();
+        leaderboardModal.onclick = function(e) {
+          if (e.target === leaderboardModal) {
+            hideLeaderboardModal();
+          }
         };
+
+        // ESC 키로 모달 닫기 이벤트
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            hideLeaderboardModal();
+          }
+        });
       }
     });
   </script>
