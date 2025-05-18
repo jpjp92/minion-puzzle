@@ -62,7 +62,12 @@ async function updateLeaderboard() {
 
 // 초기화 함수
 window.onload = function() {
+  // 새로고침마다 닉네임 삭제
+  localStorage.removeItem('minion-nickname');
   setGridSize(3);
+
+  // 무조건 닉네임 모달 띄우기
+  document.getElementById('nickname-modal').style.display = 'flex';
 
   // 리더보드 버튼 이벤트 연결
   const showBtn = document.getElementById('showLeaderboardBtn');
@@ -70,6 +75,14 @@ window.onload = function() {
   if (showBtn) showBtn.onclick = () => { updateLeaderboard().then(showLeaderboardModal); };
   if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
 };
+
+// 닉네임 입력 및 저장
+function confirmNickname() {
+  const input = document.getElementById('modal-nickname-input');
+  const nickname = input.value.trim() || 'Anonymous';
+  localStorage.setItem('minion-nickname', nickname);
+  document.getElementById('nickname-modal').style.display = 'none';
+}
 
 function setGridSize(size) {
   document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
