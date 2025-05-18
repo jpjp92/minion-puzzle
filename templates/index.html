@@ -68,9 +68,9 @@
             <div class="stat-icon"><i class="fas fa-arrows-alt"></i></div>
             <div id="moves">0</div>
           </div>
-          <!-- 리더보드 버튼: 타이머/이동수 옆에 추가 -->
+          <!-- 리더보드 버튼 -->
           <div class="stat-item">
-            <button id="showLeaderboardBtn" class="game-button leaderboard-button" title="Leaderboard" style="padding: 8px 14px; font-size: 18px;">
+            <button id="showLeaderboardBtn" class="game-button leaderboard-button" title="Leaderboard">
               🏆
             </button>
           </div>
@@ -98,14 +98,12 @@
     </div>
   </div>
 
-  
-
   <!-- 리더보드 모달 -->
   <div id="leaderboardModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2>🏆 Leaderboard</h2>
-        <span class="close" id="closeLeaderboardBtn">&times;</span>
+        <span class="close" id="closeLeaderboardBtn">×</span>
       </div>
       <div class="modal-body">
         <table id="scoresTable">
@@ -125,6 +123,32 @@
     </div>
   </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 닉네임 모달 초기화
+      const nicknameModal = document.getElementById('nickname-modal');
+      if (nicknameModal) {
+        nicknameModal.style.display = 'flex';
+        localStorage.removeItem('minion-nickname');
+      }
+
+      // 리더보드 이벤트 연결
+      const showBtn = document.getElementById('showLeaderboardBtn');
+      const closeBtn = document.getElementById('closeLeaderboardBtn');
+      const leaderboardModal = document.getElementById('leaderboardModal');
+      if (showBtn) {
+        showBtn.onclick = () => {
+          updateLeaderboard().then(showLeaderboardModal).catch(err => console.error(err));
+        };
+      }
+      if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
+      if (leaderboardModal) {
+        leaderboardModal.onclick = (e) => {
+          if (e.target === leaderboardModal) hideLeaderboardModal();
+        };
+      }
+    });
+  </script>
   <!-- static 폴더에서 불러오도록 경로 수정 -->
   <script src="/static/script.js?v=1.0"></script>
 </body>
