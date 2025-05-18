@@ -15,6 +15,16 @@
       <div class="game-intro">Drag pieces to complete the image!</div>
     </div>
 
+    <!-- 닉네임 입력 모달 -->
+    <div id="nickname-modal" class="nickname-modal-overlay" style="display: none;">
+      <div class="nickname-modal">
+        <h2>Welcome!</h2>
+        <p>Please enter your nickname to start playing.</p>
+        <input type="text" id="modal-nickname-input" placeholder="Your nickname" maxlength="15" />
+        <button onclick="confirmNickname()">Start</button>
+      </div>
+    </div>
+
     <div class="game-panel">
       <div class="difficulty-selector">
         <h3>Choose Difficulty <span aria-label="level" title="Difficulty">🎯</span></h3>
@@ -88,15 +98,7 @@
     </div>
   </div>
 
-  <!-- 닉네임 입력 모달 -->
-  <div id="nickname-modal" class="nickname-modal-overlay" style="display: none;">
-    <div class="nickname-modal">
-      <h2>Welcome!</h2>
-      <p>Please enter your nickname to start playing.</p>
-      <input type="text" id="modal-nickname-input" placeholder="Your nickname" maxlength="15" />
-      <button onclick="confirmNickname()">Start</button>
-    </div>
-  </div>
+  
 
   <!-- 리더보드 모달 -->
   <div id="leaderboardModal" class="modal">
