@@ -12,9 +12,9 @@ let resizeTimeout;
 
 // 점수 계산 함수
 function calculateScore(time_taken, moves) {
-  const BASE_SCORE = 10000;
-  const TIME_WEIGHT = 30;
-  const MOVE_WEIGHT = 10;
+  const BASE_SCORE = 100;
+  const TIME_WEIGHT = 0.3;   // (예: 1초당 0.3점 감점)
+  const MOVE_WEIGHT = 0.1;   // (예: 1회 이동당 0.1점 감점)
   let score = BASE_SCORE - (time_taken * TIME_WEIGHT) - (moves * MOVE_WEIGHT);
   return Math.max(score, 0);
 }
