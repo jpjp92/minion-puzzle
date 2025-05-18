@@ -5,7 +5,7 @@ let timerInterval;
 let time = 0;
 let moves = 0;
 let isGameStarted = false;
-let touchStartX, touchStartY; 
+let touchStartX, touchStartY;
 let activeTouchTile = null;
 let initialTileArrangement = [];
 let resizeTimeout;
@@ -19,17 +19,24 @@ function calculateScore(time_taken, moves) {
   return Math.max(score, 0);
 }
 
-// 리더보드 모달 표시/숨김
+// 리더보드 모달 표시/숨김 함수
 function showLeaderboardModal() {
-  document.getElementById('leaderboardModal').classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-function hideLeaderboardModal() {
-  document.getElementById('leaderboardModal').classList.remove('show');
-  document.body.style.overflow = '';
+  const modal = document.getElementById('leaderboardModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
 }
 
-// 리더보드 갱신
+function hideLeaderboardModal() {
+  const modal = document.getElementById('leaderboardModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+// 리더보드 갱신 함수
 async function updateLeaderboard() {
   try {
     const response = await fetch('/api/scores');
@@ -44,6 +51,8 @@ async function updateLeaderboard() {
     });
 
     const tbody = document.querySelector('#scoresTable tbody');
+    if (!tbody) return; // tbody가 없으면 함수 종료
+    
     tbody.innerHTML = '';
     const medals = {1: '🥇', 2: '🥈', 3: '🥉'};
     scores.forEach((score, idx) => {
@@ -56,7 +65,7 @@ async function updateLeaderboard() {
       row.insertCell().textContent = score.moves;
     });
   } catch (error) {
-    alert('리더보드 불러오기 오류');
+    console.error('리더보드 불러오기 오류:', error);
   }
 }
 
@@ -66,10 +75,8 @@ function confirmNickname() {
   const nickname = input.value.trim() || 'Anonymous';
   localStorage.setItem('minion-nickname', nickname);
   document.getElementById('nickname-modal').style.display = 'none';
-  // 리더보드 모달을 여기서 띄우지 않음!
 }
 
-// 초기화 함수
 // 초기화 함수
 window.onload = function() {
   // 새로고침마다 닉네임 삭제
@@ -84,8 +91,15 @@ window.onload = function() {
   const closeBtn = document.getElementById('closeLeaderboardBtn');
   const leaderboardModal = document.getElementById('leaderboardModal');
 
-  if (showBtn) showBtn.onclick = () => { updateLeaderboard().then(showLeaderboardModal); };
-  if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
+  if (showBtn) {
+    showBtn.onclick = function() {
+      updateLeaderboard().then(showLeaderboardModal).catch(err => console.error('리더보드 오류:', err));
+    }
+  }
+  
+  if (closeBtn) {
+    closeBtn.onclick = hideLeaderboardModal;
+  }
 
   // 모달 외부 클릭 시 닫기
   if (leaderboardModal) {
@@ -188,25 +202,9 @@ function setupPuzzle() {
       dropzone.style.width = `${tileSize}px`;
       dropzone.style.height = `${tileSize}px`;
       dropzone.dataset.x = x;
-      dropzone.dataset.y = y;
-      dropzone.addEventListener('dragover', dragOver);
-      dropzone.addEventListener('dragenter', dragEnter);
-      dropzone.addEventListener('dragleave', dragLeave);
-      dropzone.addEventListener('drop', drop);
-      dropzone.setAttribute('data-dropzone', 'true');
-      puzzleBoard.appendChild(dropzone);
-    }
-  }
-  
-  if (gridSize > 3) {
-    const rowsNeeded = Math.ceil(tiles.length / gridSize);
-    const adjustedHeight = (tileSize + 4) * rowsNeeded;
-    tileContainer.style.height = `${adjustedHeight}px`;
-    tileContainer.style.minHeight = `${adjustedHeight}px`;
-  }
-}
+      dropzone.dataset تعریف شده در ادامه:
 
-// 나머지 함수들 (dragStart, dragEnd 등)은 그대로 유지
+// 드래그 앤 드롭 관련 함수
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -251,6 +249,7 @@ function drop(e) {
   placeTile(draggedTile, tileX, tileY, dropzoneX, dropzoneY, e.target);
 }
 
+// 터치 이벤트 관련 함수
 function touchStart(e) {
   if (!e.target.classList.contains('tile')) return;
   e.preventDefault();
@@ -319,6 +318,7 @@ function touchEnd(e) {
   activeTouchTile = null;
 }
 
+// 타일 배치 함수
 function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   moves++;
   document.getElementById('moves').textContent = `${moves}`;
@@ -349,6 +349,7 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   }
 }
 
+// 메시지 표시 함수
 function showMessage(text, type, duration = 3000) {
   const existingMessage = document.getElementById('message');
   if (existingMessage) {
@@ -383,7 +384,7 @@ function checkComplete() {
     const nickname = localStorage.getItem('minion-nickname') || 'Anonymous';
     const difficulty = `${gridSize}x${gridSize}`;
 
-    // 서버로 기록 전송 후 리더보드 표시
+    // 서버로 기록 전송
     fetch('/api/scores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -395,11 +396,30 @@ function checkComplete() {
         moves: moves
       })
     })
-    .then(() => updateLeaderboard())
-    .then(() => showLeaderboardModal());
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('점수 저장 실패');
+      }
+      return response.json();
+    })
+    .then(() => {
+      // 점수 저장 성공 후 리더보드 업데이트하고 표시
+      return updateLeaderboard();
+    })
+    .then(() => {
+      // 1초 후에 리더보드 표시 (성공 메시지가 보일 수 있도록)
+      setTimeout(() => {
+        showLeaderboardModal();
+      }, 1500);
+    })
+    .catch(error => {
+      console.error('점수 저장 오류:', error);
+      showMessage('점수 저장 중 오류가 발생했습니다', 'error', 2000);
+    });
   }
 }
 
+// 배열 섞기 함수
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -408,6 +428,7 @@ function shuffleArray(array) {
   return array;
 }
 
+// 창 크기 조정 이벤트
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
@@ -415,6 +436,7 @@ window.addEventListener('resize', function() {
   }, 250);
 });
 
+// 레이아웃 조정 함수
 function adjustLayout() {
   if (!isGameStarted) return;
   const tileContainer = document.getElementById('tile-container');
@@ -445,6 +467,7 @@ function adjustLayout() {
   }
 }
 
+// 이미지 선택 함수
 function selectImage(el, path) {
   document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
   el.classList.add('selected');
