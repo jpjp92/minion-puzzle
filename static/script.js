@@ -70,6 +70,7 @@ function confirmNickname() {
 }
 
 // 초기화 함수
+// 초기화 함수
 window.onload = function() {
   // 새로고침마다 닉네임 삭제
   localStorage.removeItem('minion-nickname');
@@ -81,8 +82,25 @@ window.onload = function() {
   // 리더보드 버튼 이벤트 연결
   const showBtn = document.getElementById('showLeaderboardBtn');
   const closeBtn = document.getElementById('closeLeaderboardBtn');
+  const leaderboardModal = document.getElementById('leaderboardModal');
+
   if (showBtn) showBtn.onclick = () => { updateLeaderboard().then(showLeaderboardModal); };
   if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
+
+  // 모달 외부 클릭 시 닫기
+  if (leaderboardModal) {
+    leaderboardModal.addEventListener('click', (e) => {
+      if (e.target === leaderboardModal) hideLeaderboardModal();
+    });
+    leaderboardModal.addEventListener('touchend', (e) => {
+      if (e.target === leaderboardModal) hideLeaderboardModal();
+    });
+  }
+
+  // ESC 키로 모달 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideLeaderboardModal();
+  });
 };
 
 function setGridSize(size) {
