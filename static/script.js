@@ -1,4 +1,3 @@
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 let gridSize = 3;
 let originalImage = 'static/image1.jpg';
 let tiles = [];
@@ -10,7 +9,6 @@ let touchStartX, touchStartY;
 let activeTouchTile = null;
 let initialTileArrangement = [];
 let resizeTimeout;
-let touchStartYModal = 0;
 
 // 점수 계산 함수
 function calculateScore(time_taken, moves) {
@@ -21,32 +19,14 @@ function calculateScore(time_taken, moves) {
   return Math.max(score, 0);
 }
 
-// 리더보드 모달 표시
+// 리더보드 모달 표시/숨김
 function showLeaderboardModal() {
-  const modal = document.getElementById('leaderboardModal');
-  if (modal) {
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    if (isMobile) {
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-    }
-  } else {
-    console.error('Leaderboard modal not found');
-  }
+  document.getElementById('leaderboardModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
 }
-
-// 리더보드 모달 숨김
 function hideLeaderboardModal() {
-  const modal = document.getElementById('leaderboardModal');
-  if (modal) {
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-    if (isMobile) {
-      document.body.style.position = '';
-      document.body.style.width = '';
-    }
-  }
+  document.getElementById('leaderboardModal').classList.remove('show');
+  document.body.style.overflow = '';
 }
 
 // 리더보드 갱신
@@ -68,18 +48,15 @@ async function updateLeaderboard() {
     const medals = {1: '🥇', 2: '🥈', 3: '🥉'};
     scores.forEach((score, idx) => {
       const row = tbody.insertRow();
-      if (idx < 3) row.classList.add('top-three'); // 상위 3위 강조
       row.insertCell().innerHTML = medals[idx+1] || (idx+1);
       row.insertCell().textContent = score.player_name;
-      row.insertCell().innerHTML = `<span class="highlight-score">${Math.floor(score.score)}</span>`; // 점수 하이라이트
+      row.insertCell().textContent = Math.floor(score.score);
       row.insertCell().textContent = score.difficulty;
       row.insertCell().textContent = `${score.time_taken}초`;
       row.insertCell().textContent = score.moves;
     });
   } catch (error) {
-    console.error('Leaderboard update failed:', error);
-    showMessage('리더보드 불러오기 오류', 'error', 2000);
-    hideLeaderboardModal();
+    alert('리더보드 불러오기 오류');
   }
 }
 
@@ -89,58 +66,41 @@ function confirmNickname() {
   const nickname = input.value.trim() || 'Anonymous';
   localStorage.setItem('minion-nickname', nickname);
   document.getElementById('nickname-modal').style.display = 'none';
-}
-
-// 게임 초기화 함수
-function resetGame() {
-  clearInterval(timerInterval);
-  time = 0;
-  moves = 0;
-  isGameStarted = false;
-  document.getElementById('timer').textContent = `0s`;
-  document.getElementById('moves').textContent = `0`;
-  gridSize = 3;
-  document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector('.difficulty-btn[data-size="3"]').classList.add('active');
-  originalImage = 'static/image1.jpg';
-  document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
-  document.querySelector('.thumbnail[src="/static/images/image1.jpg"]').classList.add('selected');
-  document.getElementById('preview-img').src = originalImage;
-  setupPuzzle();
+  // 리더보드 모달을 여기서 띄우지 않음!
 }
 
 // 초기화 함수
+// 초기화 함수
 window.onload = function() {
+  // 새로고침마다 닉네임 삭제
   localStorage.removeItem('minion-nickname');
   setGridSize(3);
+
+  // 무조건 닉네임 모달 띄우기
   document.getElementById('nickname-modal').style.display = 'flex';
 
+  // 리더보드 버튼 이벤트 연결
   const showBtn = document.getElementById('showLeaderboardBtn');
   const closeBtn = document.getElementById('closeLeaderboardBtn');
   const leaderboardModal = document.getElementById('leaderboardModal');
+
   if (showBtn) showBtn.onclick = () => { updateLeaderboard().then(showLeaderboardModal); };
   if (closeBtn) closeBtn.onclick = hideLeaderboardModal;
+
+  // 모달 외부 클릭 시 닫기
   if (leaderboardModal) {
-    // 모달 외부 클릭으로 닫기
     leaderboardModal.addEventListener('click', (e) => {
-      if (e.target === leaderboardModal) {
-        hideLeaderboardModal();
-      }
+      if (e.target === leaderboardModal) hideLeaderboardModal();
     });
-    // 모바일 스와이프 닫기
-    if (isMobile) {
-      leaderboardModal.addEventListener('touchstart', (e) => {
-        touchStartYModal = e.touches[0].clientY;
-      });
-      leaderboardModal.addEventListener('touchmove', (e) => {
-        const touchEndY = e.touches[0].clientY;
-        const modalContent = leaderboardModal.querySelector('.modal-content');
-        if (!modalContent.contains(e.target) && Math.abs(touchEndY - touchStartYModal) > 50) {
-          hideLeaderboardModal();
-        }
-      });
-    }
+    leaderboardModal.addEventListener('touchend', (e) => {
+      if (e.target === leaderboardModal) hideLeaderboardModal();
+    });
   }
+
+  // ESC 키로 모달 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideLeaderboardModal();
+  });
 };
 
 function setGridSize(size) {
@@ -246,6 +206,7 @@ function setupPuzzle() {
   }
 }
 
+// 나머지 함수들 (dragStart, dragEnd 등)은 그대로 유지
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -409,6 +370,7 @@ function showMessage(text, type, duration = 3000) {
   }, duration);
 }
 
+// 게임 완료 시 점수 저장 및 리더보드 표시
 function checkComplete() {
   const placedTiles = document.querySelectorAll('.puzzle-board .tile');
   if (placedTiles.length === gridSize * gridSize) {
@@ -416,10 +378,12 @@ function checkComplete() {
     isGameStarted = false;
     showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 1500);
 
+    // 점수 계산
     const score = calculateScore(time, moves);
     const nickname = localStorage.getItem('minion-nickname') || 'Anonymous';
     const difficulty = `${gridSize}x${gridSize}`;
 
+    // 서버로 기록 전송 후 리더보드 표시
     fetch('/api/scores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -432,15 +396,7 @@ function checkComplete() {
       })
     })
     .then(() => updateLeaderboard())
-    .then(() => showLeaderboardModal())
-    .then(() => {
-      setTimeout(() => {
-        if (confirm('다시 하시겠습니까?')) {
-          hideLeaderboardModal();
-          resetGame();
-        }
-      }, 1000);
-    });
+    .then(() => showLeaderboardModal());
   }
 }
 
