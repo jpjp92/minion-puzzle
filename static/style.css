@@ -609,6 +609,24 @@ h2 {
   min-width: 260px;
 }
 
+/* 기존 style.css 내용 유지, 아래 스타일만 추가 */
+.top-three {
+  font-weight: bold;
+}
+.top-three:nth-child(1) {
+  background-color: #fff9db; /* 1위: 금색 배경 */
+}
+.top-three:nth-child(2) {
+  background-color: #f8f9fa; /* 2위: 은색 배경 */
+}
+.top-three:nth-child(3) {
+  background-color: #f1f3f5; /* 3위: 동색 배경 */
+}
+.highlight-score {
+  color: #1565c0;
+  font-weight: bold;
+}
+
 /* 모바일 반응형 스타일 수정 */
 @media (max-width: 600px) {
   .panel-bottom {
