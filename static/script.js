@@ -1,5 +1,5 @@
 let gridSize = 3;
-let originalImage = 'static/image1.jpg';
+let originalImage = '/static/image1.jpg';
 let tiles = [];
 let timerInterval;
 let time = 0;
@@ -43,7 +43,6 @@ async function updateLeaderboard() {
     if (!response.ok) throw new Error('리더보드 데이터 가져오기 실패');
     let scores = await response.json();
 
-    // 점수 내림차순, 동점이면 시간 오름차순, 이동수 오름차순
     scores.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       if (a.time_taken !== b.time_taken) return a.time_taken - b.time_taken;
@@ -51,7 +50,7 @@ async function updateLeaderboard() {
     });
 
     const tbody = document.querySelector('#scoresTable tbody');
-    if (!tbody) return; // tbody가 없으면 함수 종료
+    if (!tbody) return;
     
     tbody.innerHTML = '';
     const medals = {1: '🥇', 2: '🥈', 3: '🥉'};
@@ -79,29 +78,29 @@ function confirmNickname() {
 
 // 초기화 함수
 window.onload = function() {
-  // 새로고침마다 닉네임 삭제
   localStorage.removeItem('minion-nickname');
   setGridSize(3);
-
-  // 무조건 닉네임 모달 띄우기
   document.getElementById('nickname-modal').style.display = 'flex';
 
-  // 리더보드 버튼 이벤트 연결
   const showBtn = document.getElementById('showLeaderboardBtn');
   const closeBtn = document.getElementById('closeLeaderboardBtn');
   const leaderboardModal = document.getElementById('leaderboardModal');
+  const confirmBtn = document.getElementById('confirm-nickname-btn');
 
   if (showBtn) {
     showBtn.onclick = function() {
       updateLeaderboard().then(showLeaderboardModal).catch(err => console.error('리더보드 오류:', err));
-    }
+    };
   }
   
   if (closeBtn) {
     closeBtn.onclick = hideLeaderboardModal;
   }
 
-  // 모달 외부 클릭 시 닫기
+  if (confirmBtn) {
+    confirmBtn.onclick = confirmNickname;
+  }
+
   if (leaderboardModal) {
     leaderboardModal.addEventListener('click', (e) => {
       if (e.target === leaderboardModal) hideLeaderboardModal();
@@ -111,7 +110,6 @@ window.onload = function() {
     });
   }
 
-  // ESC 키로 모달 닫기
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') hideLeaderboardModal();
   });
@@ -202,9 +200,24 @@ function setupPuzzle() {
       dropzone.style.width = `${tileSize}px`;
       dropzone.style.height = `${tileSize}px`;
       dropzone.dataset.x = x;
-      dropzone.dataset تعریف شده در ادامه:
+      dropzone.dataset.y = y;
+      dropzone.addEventListener('dragover', dragOver);
+      dropzone.addEventListener('dragenter', dragEnter);
+      dropzone.addEventListener('dragleave', dragLeave);
+      dropzone.addEventListener('drop', drop);
+      dropzone.setAttribute('data-dropzone', 'true');
+      puzzleBoard.appendChild(dropzone);
+    }
+  }
+  
+  if (gridSize > 3) {
+    const rowsNeeded = Math.ceil(tiles.length / gridSize);
+    const adjustedHeight = (tileSize + 4) * rowsNeeded;
+    tileContainer.style.height = `${adjustedHeight}px`;
+    tileContainer.style.minHeight = `${adjustedHeight}px`;
+  }
+}
 
-// 드래그 앤 드롭 관련 함수
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', `${e.target.dataset.x},${e.target.dataset.y}`);
   e.target.classList.add('dragging');
@@ -249,7 +262,6 @@ function drop(e) {
   placeTile(draggedTile, tileX, tileY, dropzoneX, dropzoneY, e.target);
 }
 
-// 터치 이벤트 관련 함수
 function touchStart(e) {
   if (!e.target.classList.contains('tile')) return;
   e.preventDefault();
@@ -318,7 +330,6 @@ function touchEnd(e) {
   activeTouchTile = null;
 }
 
-// 타일 배치 함수
 function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   moves++;
   document.getElementById('moves').textContent = `${moves}`;
@@ -349,7 +360,6 @@ function placeTile(tile, tileX, tileY, dropzoneX, dropzoneY, dropzone) {
   }
 }
 
-// 메시지 표시 함수
 function showMessage(text, type, duration = 3000) {
   const existingMessage = document.getElementById('message');
   if (existingMessage) {
@@ -371,16 +381,6 @@ function showMessage(text, type, duration = 3000) {
   }, duration);
 }
 
-
-function confirmNickname() {
-  const input = document.getElementById('modal-nickname-input');
-  const nickname = input.value.trim() || 'Anonymous';
-  localStorage.setItem('minion-nickname', nickname);
-  document.getElementById('nickname-modal').style.display = 'none';
-  // 리더보드 모달을 여기서 띄우지 않음!
-}
-
-// 게임 완료 시 점수 저장 및 리더보드 표시
 function checkComplete() {
   const placedTiles = document.querySelectorAll('.puzzle-board .tile');
   if (placedTiles.length === gridSize * gridSize) {
@@ -388,12 +388,10 @@ function checkComplete() {
     isGameStarted = false;
     showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 1500);
 
-    // 점수 계산
     const score = calculateScore(time, moves);
     const nickname = localStorage.getItem('minion-nickname') || 'Anonymous';
     const difficulty = `${gridSize}x${gridSize}`;
 
-    // 서버로 기록 전송
     fetch('/api/scores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -412,11 +410,9 @@ function checkComplete() {
       return response.json();
     })
     .then(() => {
-      // 점수 저장 성공 후 리더보드 업데이트하고 표시
       return updateLeaderboard();
     })
     .then(() => {
-      // 1초 후에 리더보드 표시 (성공 메시지가 보일 수 있도록)
       setTimeout(() => {
         showLeaderboardModal();
       }, 1500);
@@ -428,7 +424,6 @@ function checkComplete() {
   }
 }
 
-// 배열 섞기 함수
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -437,7 +432,6 @@ function shuffleArray(array) {
   return array;
 }
 
-// 창 크기 조정 이벤트
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
@@ -445,7 +439,6 @@ window.addEventListener('resize', function() {
   }, 250);
 });
 
-// 레이아웃 조정 함수
 function adjustLayout() {
   if (!isGameStarted) return;
   const tileContainer = document.getElementById('tile-container');
@@ -476,7 +469,6 @@ function adjustLayout() {
   }
 }
 
-// 이미지 선택 함수
 function selectImage(el, path) {
   document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('selected'));
   el.classList.add('selected');
