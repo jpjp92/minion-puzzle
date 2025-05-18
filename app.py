@@ -29,9 +29,9 @@ def get_scores():
     try:
         response = supabase.table('puzzle_scores')\
             .select('player_name,score,difficulty,time_taken,moves,created_at')\
-            .order('score', descending=True)\
-            .order('time_taken', descending=False)\
-            .order('moves', descending=False)\
+            .order('score', desc=True)\
+            .order('time_taken', desc=False)\
+            .order('moves', desc=False)\
             .limit(10)\
             .execute()
         return jsonify(response.data)
@@ -48,7 +48,7 @@ def save_score():
             return jsonify({'error': 'Missing required fields'}), 400
         result = supabase.table('puzzle_scores').insert({
             'player_name': data['player_name'],
-            'score': float(data['score']),
+            'score': int(data['score']),
             'difficulty': data['difficulty'],
             'time_taken': int(data['time_taken']),
             'moves': int(data['moves']),
