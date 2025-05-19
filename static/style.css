@@ -315,7 +315,7 @@ h2 {
 }
 
 .preview::after {
-  content: '목표 이미지';
+  content: 'Target Image';
   position: absolute;
   bottom: 15px;
   right: 15px;
