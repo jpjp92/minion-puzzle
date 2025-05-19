@@ -51,12 +51,12 @@ async function updateLeaderboard() {
 
     const tbody = document.querySelector('#scoresTable tbody');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
-    const medals = {1: '🥇', 2: '🥈', 3: '🥉'};
+    const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
     scores.forEach((score, idx) => {
       const row = tbody.insertRow();
-      row.insertCell().innerHTML = medals[idx+1] || (idx+1);
+      row.insertCell().innerHTML = medals[idx + 1] || (idx + 1);
       row.insertCell().textContent = score.player_name;
       row.insertCell().textContent = Math.floor(score.score);
       row.insertCell().textContent = score.difficulty;
@@ -71,7 +71,11 @@ async function updateLeaderboard() {
 // 닉네임 입력 및 저장
 function confirmNickname() {
   const input = document.getElementById('modal-nickname-input');
-  const nickname = input.value.trim() || 'Anonymous';
+  const nickname = input.value.trim();
+  if (!nickname) {
+    showMessage('닉네임을 입력해주세요!', 'error', 2000);
+    return;
+  }
   localStorage.setItem('minion-nickname', nickname);
   document.getElementById('nickname-modal').style.display = 'none';
 }
@@ -80,25 +84,38 @@ function confirmNickname() {
 window.onload = function() {
   localStorage.removeItem('minion-nickname');
   setGridSize(3);
-  document.getElementById('nickname-modal').style.display = 'flex';
 
+  const nicknameModal = document.getElementById('nickname-modal');
+  const nicknameInput = document.getElementById('modal-nickname-input');
+  const confirmBtn = document.getElementById('confirm-nickname-btn');
   const showBtn = document.getElementById('showLeaderboardBtn');
   const closeBtn = document.getElementById('closeLeaderboardBtn');
   const leaderboardModal = document.getElementById('leaderboardModal');
-  const confirmBtn = document.getElementById('confirm-nickname-btn');
+
+  if (nicknameModal) {
+    nicknameModal.style.display = 'flex';
+    if (nicknameInput) {
+      nicknameInput.focus();
+      nicknameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          confirmNickname();
+        }
+      });
+    }
+  }
+
+  if (confirmBtn) {
+    confirmBtn.onclick = confirmNickname;
+  }
 
   if (showBtn) {
     showBtn.onclick = function() {
       updateLeaderboard().then(showLeaderboardModal).catch(err => console.error('리더보드 오류:', err));
     };
   }
-  
+
   if (closeBtn) {
     closeBtn.onclick = hideLeaderboardModal;
-  }
-
-  if (confirmBtn) {
-    confirmBtn.onclick = confirmNickname;
   }
 
   if (leaderboardModal) {
@@ -147,31 +164,31 @@ function setupPuzzle() {
   puzzleBoard.innerHTML = '';
   const containerSize = 300;
   const tileSize = Math.floor(containerSize / gridSize) - 4;
-  
+
   tiles = [];
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       tiles.push({ x, y });
     }
   }
-  
+
   shuffleArray(tiles);
   initialTileArrangement = [...tiles];
-  
+
   tileContainer.style.width = `${containerSize}px`;
   tileContainer.style.height = `${containerSize}px`;
   tileContainer.style.display = 'grid';
   tileContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   tileContainer.style.gridTemplateRows = `repeat(${Math.ceil(tiles.length / gridSize)}, 1fr)`;
   tileContainer.style.gap = '4px';
-  
+
   puzzleBoard.style.width = `${containerSize}px`;
   puzzleBoard.style.height = `${containerSize}px`;
   puzzleBoard.style.display = 'grid';
   puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
   puzzleBoard.style.gap = '4px';
-  
+
   tiles.forEach(tile => {
     const div = document.createElement('div');
     div.className = 'tile';
@@ -183,16 +200,16 @@ function setupPuzzle() {
     div.setAttribute('draggable', true);
     div.dataset.x = tile.x;
     div.dataset.y = tile.y;
-    
+
     div.addEventListener('dragstart', dragStart);
     div.addEventListener('dragend', dragEnd);
     div.addEventListener('touchstart', touchStart, { passive: false });
     div.addEventListener('touchmove', touchMove, { passive: false });
     div.addEventListener('touchend', touchEnd, { passive: false });
-    
+
     tileContainer.appendChild(div);
   });
-  
+
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const dropzone = document.createElement('div');
@@ -209,7 +226,7 @@ function setupPuzzle() {
       puzzleBoard.appendChild(dropzone);
     }
   }
-  
+
   if (gridSize > 3) {
     const rowsNeeded = Math.ceil(tiles.length / gridSize);
     const adjustedHeight = (tileSize + 4) * rowsNeeded;
@@ -403,24 +420,24 @@ function checkComplete() {
         moves: moves
       })
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('점수 저장 실패');
-      }
-      return response.json();
-    })
-    .then(() => {
-      return updateLeaderboard();
-    })
-    .then(() => {
-      setTimeout(() => {
-        showLeaderboardModal();
-      }, 1500);
-    })
-    .catch(error => {
-      console.error('점수 저장 오류:', error);
-      showMessage('점수 저장 중 오류가 발생했습니다', 'error', 2000);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('점수 저장 실패');
+        }
+        return response.json();
+      })
+      .then(() => {
+        return updateLeaderboard();
+      })
+      .then(() => {
+        setTimeout(() => {
+          showLeaderboardModal();
+        }, 1500);
+      })
+      .catch(error => {
+        console.error('점수 저장 오류:', error);
+        showMessage('점수 저장 중 오류가 발생했습니다', 'error', 2000);
+      });
   }
 }
 
