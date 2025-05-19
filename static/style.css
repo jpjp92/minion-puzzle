@@ -569,6 +569,16 @@ h2 {
   width: 90%;
 }
 
+#modal-nickname-input {
+  font-size: 16px;
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 .image-selector {
   display: flex;
   align-items: center;
@@ -718,9 +728,10 @@ h2 {
     font-size: 14px;
   }
 
-  .modal-content input {
-    width: 100%;
+  #modal-nickname-input {
+    font-size: 16px;
     padding: 8px;
+    width: 100%;
   }
 
   .modal-content button {
