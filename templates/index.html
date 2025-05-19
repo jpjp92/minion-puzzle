@@ -21,9 +21,13 @@
         <h2>Welcome!</h2>
         <p>Please enter your nickname to start playing.</p>
         <input type="text" id="modal-nickname-input" placeholder="Your nickname" maxlength="15" />
-        <button onclick="confirmNickname()">Start</button>
+        <button id="confirm-nickname-btn" onclick="confirmNickname()">
+          <span class="btn-icon">▶</span>
+          Enter
+        </button>
       </div>
     </div>
+ 
 
     <div class="game-panel">
       <div class="difficulty-selector">
