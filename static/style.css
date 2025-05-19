@@ -627,7 +627,7 @@ h2 {
 #modal-nickname-input {
   width: 100%;
   padding: 14px 20px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #1565c0;
   border-radius: 50px;
   font-size: 16px;
   transition: all 0.3s ease;
@@ -640,9 +640,9 @@ h2 {
 }
 
 #modal-nickname-input:focus {
-  border-color: #1565c0;
+  border-color: #0d47a1;
   background-color: #fff;
-  box-shadow: 0 5px 15px rgba(21, 101, 192, 0.15);
+  box-shadow: 0 5px 15px rgba(13, 71, 161, 0.15);
 }
 
 #modal-nickname-input::placeholder {
@@ -650,7 +650,7 @@ h2 {
 }
 
 #confirm-nickname-btn {
-  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  background: linear-gradient(45deg, #ffa000, #1565c0);
   color: white;
   border: none;
   border-radius: 50px;
@@ -659,21 +659,23 @@ h2 {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 15px;
-  box-shadow: 0 6px 15px rgba(46, 125, 50, 0.25);
+  margin-top: 20px;
+  box-shadow: 0 6px 15px rgba(255, 160, 0, 0.25);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 #confirm-nickname-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+  box-shadow: 0 8px 20px rgba(255, 160, 0, 0.3);
 }
 
 #confirm-nickname-btn:active {
   transform: translateY(1px);
-  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+  box-shadow: 0 4px 8px rgba(255, 160, 0, 0.3);
 }
 
 .nickname-error {
@@ -849,9 +851,16 @@ h2 {
   #confirm-nickname-btn {
     padding: 12px 24px;
     font-size: 15px;
+    margin-top: 15px;
   }
 
   .nickname-error {
     font-size: 13px;
+  }
+}
+
+@media (min-width: 601px) {
+  #confirm-nickname-btn {
+    margin-top: 25px;
   }
 }
