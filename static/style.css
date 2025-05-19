@@ -207,7 +207,7 @@ h2 {
 
 #start-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(46, 125, 50,  historic 0.4);
+  box-shadow: 0 12px 24px rgba(46, 125, 50, 0.4);
 }
 
 #start-btn:active {
@@ -245,7 +245,6 @@ h2 {
   font-size: 20px;
 }
 
-/* 리더보드 버튼 스타일 */
 .leaderboard-button {
   background: #fffbe7;
   color: #ffb300;
@@ -287,7 +286,7 @@ h2 {
   background-color: white;
   padding: 15px;
   border-radius: 15px;
-  box-shadow: 0 10px 30_\-0px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .tile-container {
@@ -315,7 +314,7 @@ h2 {
 }
 
 .preview::after {
-  content: 'Target Image';
+  content: '목표 이미지';
   position: absolute;
   bottom: 15px;
   right: 15px;
@@ -422,7 +421,6 @@ h2 {
   background: linear-gradient(45deg, #e53935, #c62828);
 }
 
-/* 모달 스타일 개선 */
 .modal {
   position: fixed;
   top: 0;
@@ -430,7 +428,7 @@ h2 {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: none; /* 기본적으로 숨김 */
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
@@ -506,7 +504,6 @@ h2 {
   background-color: #45a049;
 }
 
-/* 리더보드 테이블 스타일 개선 */
 #scoresTable {
   width: 100%;
   border-collapse: collapse;
@@ -537,28 +534,27 @@ h2 {
 }
 
 #scoresTable tbody tr:nth-child(1) {
-  background-color: rgba(255, 215, 0, 0.1); /* 금색 배경 (1등) */
+  background-color: rgba(255, 215, 0, 0.1);
 }
 
 #scoresTable tbody tr:nth-child(2) {
-  background-color: rgba(192, 192, 192, 0.1); /* 은색 배경 (2등) */
+  background-color: rgba(192, 192, 192, 0.1);
 }
 
 #scoresTable tbody tr:nth-child(3) {
-  background-color: rgba(205, 127, 50, 0.1); /* 동색 배경 (3등) */
+  background-color: rgba(205, 127, 50, 0.1);
 }
 
-/* 닉네임 입력 모달 중앙 정렬 */
 .nickname-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
-  align-items: center;    /* 세로 중앙 */
-  justify-content: center; /* 가로 중앙 */
+  align-items: center;
+  justify-content: center;
   z-index: 2000;
 }
 
@@ -566,12 +562,13 @@ h2 {
   background: #fff;
   border-radius: 16px;
   padding: 32px 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   text-align: center;
   min-width: 260px;
+  max-width: 400px;
+  width: 90%;
 }
 
-/* 이미지 선택 드롭다운 스타일 추가 */
 .image-selector {
   display: flex;
   align-items: center;
@@ -599,7 +596,6 @@ h2 {
   border-color: #1565c0;
 }
 
-/* 이미지 선택 그리드 스타일 */
 .image-selector-grid {
   margin: 20px 0;
   text-align: center;
@@ -634,7 +630,6 @@ h2 {
   box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.3);
 }
 
-/* 모바일 반응형 스타일 */
 @media (max-width: 900px) {
   .game-container {
     flex-direction: column;
@@ -706,5 +701,30 @@ h2 {
 
   .modal-header h2 {
     font-size: 18px;
+  }
+
+  .nickname-modal {
+    min-width: 200px;
+    max-width: 300px;
+    padding: 24px 16px;
+    width: 85%;
+  }
+
+  .nickname-modal h2 {
+    font-size: 20px;
+  }
+
+  .nickname-modal p {
+    font-size: 14px;
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .modal-content button {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 }
