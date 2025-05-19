@@ -166,7 +166,7 @@ h2 {
 
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
 
@@ -225,7 +225,8 @@ h2 {
 }
 
 .btn-icon {
-  font-size: 20px;
+  font-size: 24px;
+  animation: pulse 1.5s infinite;
 }
 
 .stat-item {
@@ -650,32 +651,55 @@ h2 {
 }
 
 #confirm-nickname-btn {
-  background: linear-gradient(45deg, #ffa000, #1565c0);
+  background: linear-gradient(45deg, #2196F3, #1565c0);
   color: white;
   border: none;
   border-radius: 50px;
-  padding: 14px 32px;
-  font-size: 16px;
+  padding: 16px 38px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin-top: 20px;
-  box-shadow: 0 6px 15px rgba(255, 160, 0, 0.25);
+  box-shadow: 0 10px 20px rgba(21, 101, 192, 0.4);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+#confirm-nickname-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.3) 50%, 
+      rgba(255, 255, 255, 0) 100%);
+  transition: all 0.6s;
 }
 
 #confirm-nickname-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 160, 0, 0.3);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(21, 101, 192, 0.5);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#confirm-nickname-btn:hover::before {
+  left: 100%;
 }
 
 #confirm-nickname-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 8px rgba(255, 160, 0, 0.3);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 5px 15px rgba(21, 101, 192, 0.4);
 }
 
 .nickname-error {
