@@ -83,18 +83,7 @@ A responsive, interactive drag-and-drop puzzle game built with HTML, CSS, and va
 
 *No server or build process required!*
 
-## 📁 Project Structure
 
-```
-minion-puzzle-game/
-├── index.html          # Main HTML document
-├── style.css           # CSS styling
-├── script.js           # JavaScript functionality
-└── config/             # Game assets
-    ├── image1.jpg
-    ├── image2.jpg
-    └── ...
-```
 
 ## 📝 Future Enhancements
 
@@ -102,7 +91,6 @@ minion-puzzle-game/
 - More puzzle image options
 - Custom image upload feature
 - Additional difficulty levels
-- Sound effects and background music
 - Social media sharing
 
 ## 📜 License
