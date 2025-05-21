@@ -25,6 +25,7 @@ function showLeaderboardModal() {
   if (modal) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    modal.classList.add('show');   // ✅ 추가 필요
   }
 }
 
@@ -42,6 +43,7 @@ async function updateLeaderboard() {
     const response = await fetch('/api/scores');
     if (!response.ok) throw new Error('리더보드 데이터 가져오기 실패');
     let scores = await response.json();
+    console.log('받은 리더보드 데이터:', scores); // ✅ 로그 추가
 
     scores.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
@@ -63,6 +65,7 @@ async function updateLeaderboard() {
       row.insertCell().textContent = `${score.time_taken}초`;
       row.insertCell().textContent = score.moves;
     });
+    console.log('✅ 리더보드 테이블 채움 완료');
   } catch (error) {
     console.error('리더보드 불러오기 오류:', error);
   }
