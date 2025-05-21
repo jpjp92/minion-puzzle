@@ -62,7 +62,7 @@ async function updateLeaderboard() {
       row.insertCell().textContent = score.player_name;
       row.insertCell().textContent = Math.floor(score.score);
       row.insertCell().textContent = score.difficulty;
-      row.insertCell().textContent = `${score.time_taken}초`;
+      row.insertCell().textContent = `${score.time_taken}s`;
       row.insertCell().textContent = score.moves;
     });
     console.log('✅ 리더보드 테이블 채움 완료');
