@@ -848,8 +848,8 @@ h2 {
 
   #scoresTable th,
   #scoresTable td {
-    padding: 8px 10px;
-    font-size: 12px;
+    padding: 6px 6px;
+    font-size: 10px;
   }
 
   .modal-header h2 {
