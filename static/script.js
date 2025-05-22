@@ -10,13 +10,61 @@ let activeTouchTile = null;
 let initialTileArrangement = [];
 let resizeTimeout;
 
-// 점수 계산 함수
-function calculateScore(time_taken, moves) {
-  const BASE_SCORE = 100;
-  const TIME_WEIGHT = 0.3;
-  const MOVE_WEIGHT = 0.1;
-  let score = BASE_SCORE - (time_taken * TIME_WEIGHT) - (moves * MOVE_WEIGHT);
-  return Math.max(score, 0);
+// 개선된 점수 계산 함수
+function calculateScore(time_taken, moves, gridSize) {
+  // 난이도별 기본 점수 및 가중치 설정
+  const difficultySettings = {
+    3: { 
+      baseScore: 100, 
+      timeWeight: 0.3, 
+      moveWeight: 0.1,
+      multiplier: 1.0,
+      optimalMoves: 9,    // 3x3 최적 이동 횟수 기준
+      optimalTime: 30     // 3x3 최적 시간 기준 (초)
+    },
+    4: { 
+      baseScore: 200, 
+      timeWeight: 0.25, 
+      moveWeight: 0.08,
+      multiplier: 1.5,
+      optimalMoves: 20,   // 4x4 최적 이동 횟수 기준
+      optimalTime: 60     // 4x4 최적 시간 기준 (초)
+    },
+    5: { 
+      baseScore: 300, 
+      timeWeight: 0.2, 
+      moveWeight: 0.06,
+      multiplier: 2.0,
+      optimalMoves: 35,   // 5x5 최적 이동 횟수 기준
+      optimalTime: 120    // 5x5 최적 시간 기준 (초)
+    }
+  };
+
+  const settings = difficultySettings[gridSize] || difficultySettings[3];
+  
+  // 기본 점수에서 시간과 이동 횟수에 따른 감점
+  let score = settings.baseScore - (time_taken * settings.timeWeight) - (moves * settings.moveWeight);
+  
+  // 보너스 점수 계산 (최적 기준보다 빠르거나 적은 이동 시)
+  let bonus = 0;
+  
+  // 시간 보너스 (최적 시간보다 빠른 경우)
+  if (time_taken < settings.optimalTime) {
+    bonus += (settings.optimalTime - time_taken) * 0.5;
+  }
+  
+  // 이동 보너스 (최적 이동 횟수보다 적은 경우)
+  if (moves < settings.optimalMoves) {
+    bonus += (settings.optimalMoves - moves) * 2;
+  }
+  
+  // 난이도 배수 적용
+  score = (score + bonus) * settings.multiplier;
+  
+  // 최소 점수 보장 (난이도별로 다른 최소점수)
+  const minScore = settings.baseScore * 0.1;
+  
+  return Math.max(Math.round(score), minScore);
 }
 
 // 리더보드 모달 표시/숨김 함수
@@ -25,7 +73,7 @@ function showLeaderboardModal() {
   if (modal) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    modal.classList.add('show');   // ✅ 추가 필요
+    modal.classList.add('show');
   }
 }
 
@@ -43,7 +91,6 @@ async function updateLeaderboard() {
     const response = await fetch('/api/scores');
     if (!response.ok) throw new Error('리더보드 데이터 가져오기 실패');
     let scores = await response.json();
-    // console.log('받은 리더보드 데이터:', scores); // ✅ 로그 추가
 
     scores.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
@@ -65,7 +112,6 @@ async function updateLeaderboard() {
       row.insertCell().textContent = `${score.time_taken}s`;
       row.insertCell().textContent = score.moves;
     });
-    // console.log('✅ 리더보드 테이블 채움 완료');
   } catch (error) {
     console.error('리더보드 불러오기 오류:', error);
   }
@@ -406,11 +452,13 @@ function checkComplete() {
   if (placedTiles.length === gridSize * gridSize) {
     clearInterval(timerInterval);
     isGameStarted = false;
-    showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회`, 'success', 1500);
-
-    const score = calculateScore(time, moves);
+    
+    // gridSize를 점수 계산에 포함
+    const score = calculateScore(time, moves, gridSize);
     const nickname = localStorage.getItem('minion-nickname') || 'Anonymous';
     const difficulty = `${gridSize}x${gridSize}`;
+
+    showMessage(`축하합니다! (Congratulations) ${time}초, ${moves}회 - 점수: ${score}점`, 'success', 2000);
 
     fetch('/api/scores', {
       method: 'POST',
@@ -435,7 +483,7 @@ function checkComplete() {
       .then(() => {
         setTimeout(() => {
           showLeaderboardModal();
-        }, 1500);
+        }, 2000);
       })
       .catch(error => {
         console.error('점수 저장 오류:', error);
