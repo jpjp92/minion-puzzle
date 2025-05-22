@@ -1,5 +1,5 @@
 let gridSize = 3;
-let originalImage = '/static/image1.jpg';
+let originalImage = '/static/images/image1.jpg';
 let tiles = [];
 let timerInterval;
 let time = 0;
